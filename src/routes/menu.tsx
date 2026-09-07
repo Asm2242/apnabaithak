@@ -5,7 +5,7 @@ import { CATEGORIES, MENU_ITEMS } from "@/data/menu";
 import { FoodCard } from "@/components/FoodCard";
 import { PageHero } from "@/components/PageHero";
 
-type MenuSearch = { category?: string };
+type MenuSearch = { category?: string | undefined };
 
 export const Route = createFileRoute("/menu")({
   validateSearch: (search: Record<string, unknown>): MenuSearch => ({
