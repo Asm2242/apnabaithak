@@ -16,7 +16,7 @@ export const RESTAURANT = {
   coords: "26.9381402, 80.9129123",
   maps:
     "https://www.google.com/maps/place/APNA+BAITHAK+VEGITERIAN+RESTAURANT/@26.9383956,80.9125479,18.51z/data=!4m6!3m5!1s0x3999579a39ab8ffd:0x77a1bd2200e446b!8m2!3d26.9381402!4d80.9129123!16s%2Fg%2F11nvgvl9m5?entry=ttu",
-  logo: `${ORIGIN}/logo-neon.svg`,
+  logo: "/logo-neon.svg",
 };
 
 export const waLink = (text = "Hi Apna Baithak") =>
@@ -100,7 +100,7 @@ export const OFFERS: Offer[] = [
 
 export const FREE_DELIVERY_AT = 399;
 
-const g = (n: string) => `${ORIGIN}/gallery/${encodeURIComponent(n)}`;
+const g = (n: string) => `/images/gallery/${encodeURIComponent(n)}`;
 
 export type GalleryImage = { src: string; caption: string; kind: "Restaurant" | "Food" };
 
@@ -111,28 +111,28 @@ export const GALLERY: GalleryImage[] = [
   { src: g("WhatsApp Image 2026-08-23 at 11.08.43 PM.jpeg"), caption: "Evening • Crowd favourite", kind: "Restaurant" },
   { src: g("WhatsApp Image 2026-08-23 at 11.08.44 PM.jpeg"), caption: "Counter • Pure Veg", kind: "Restaurant" },
   { src: g("WhatsApp Image 2026-08-23 at 11.08.41 PM (1).jpeg"), caption: "Outdoor seating", kind: "Restaurant" },
-  { src: `${ORIGIN}/images/foods/special-thali.jpg`, caption: "special thali", kind: "Food" },
-  { src: `${ORIGIN}/images/foods/steam-momos-6-pc.jpg`, caption: "steam momos 6 pc", kind: "Food" },
-  { src: `${ORIGIN}/images/foods/mini-combo.jpg`, caption: "mini combo", kind: "Food" },
-  { src: `${ORIGIN}/images/foods/jeera-rice.jpg`, caption: "jeera rice", kind: "Food" },
-  { src: `${ORIGIN}/images/foods/malai-chaap.jpg`, caption: "malai chaap", kind: "Food" },
-  { src: `${ORIGIN}/images/foods/afghani-chaap.jpg`, caption: "afghani chaap", kind: "Food" },
-  { src: `${ORIGIN}/images/foods/thali.jpg`, caption: "thali", kind: "Food" },
-  { src: `${ORIGIN}/images/foods/paneer-butter-masala.jpg`, caption: "paneer butter masala", kind: "Food" },
-  { src: `${ORIGIN}/images/foods/paneer-burger.jpg`, caption: "paneer burger", kind: "Food" },
-  { src: `${ORIGIN}/images/foods/schezwan-noodles.jpg`, caption: "schezwan noodles", kind: "Food" },
-  { src: `${ORIGIN}/images/foods/tandoori-momos.jpg`, caption: "tandoori momos", kind: "Food" },
-  { src: `${ORIGIN}/images/foods/chilli-paneer.jpg`, caption: "chilli paneer", kind: "Food" },
-  { src: `${ORIGIN}/images/foods/malai-chaap-roll.jpg`, caption: "malai chaap roll", kind: "Food" },
-  { src: `${ORIGIN}/images/foods/kadai-chaap.jpg`, caption: "kadai chaap", kind: "Food" },
-  { src: `${ORIGIN}/images/foods/honey-chilli-potato.jpg`, caption: "honey chilli potato", kind: "Food" },
-  { src: `${ORIGIN}/images/foods/cold-coffee.jpg`, caption: "cold coffee", kind: "Food" },
-  { src: `${ORIGIN}/images/foods/family-combo.jpg`, caption: "family combo", kind: "Food" },
-  { src: `${ORIGIN}/images/foods/paneer-tikka-chaap.jpg`, caption: "paneer tikka chaap", kind: "Food" },
-  { src: `${ORIGIN}/images/foods/veg-fried-rice.jpg`, caption: "veg fried rice", kind: "Food" },
-  { src: `${ORIGIN}/images/foods/shahi-paneer.jpg`, caption: "shahi paneer", kind: "Food" },
-  { src: `${ORIGIN}/images/foods/crispy-momos.jpg`, caption: "crispy momos", kind: "Food" },
-  { src: `${ORIGIN}/images/foods/butter-naan.jpg`, caption: "butter naan", kind: "Food" },
+  { src: `/images/foods/special-thali.jpg`, caption: "special thali", kind: "Food" },
+  { src: `/images/foods/steam-momos-6-pc.jpg`, caption: "steam momos 6 pc", kind: "Food" },
+  { src: `/images/foods/mini-combo.jpg`, caption: "mini combo", kind: "Food" },
+  { src: `/images/foods/jeera-rice.jpg`, caption: "jeera rice", kind: "Food" },
+  { src: `/images/foods/malai-chaap.jpg`, caption: "malai chaap", kind: "Food" },
+  { src: `/images/foods/afghani-chaap.jpg`, caption: "afghani chaap", kind: "Food" },
+  { src: `/images/foods/thali.jpg`, caption: "thali", kind: "Food" },
+  { src: `/images/foods/paneer-butter-masala.jpg`, caption: "paneer butter masala", kind: "Food" },
+  { src: `/images/foods/paneer-burger.jpg`, caption: "paneer burger", kind: "Food" },
+  { src: `/images/foods/schezwan-noodles.jpg`, caption: "schezwan noodles", kind: "Food" },
+  { src: `/images/foods/tandoori-momos.jpg`, caption: "tandoori momos", kind: "Food" },
+  { src: `/images/foods/chilli-paneer.jpg`, caption: "chilli paneer", kind: "Food" },
+  { src: `/images/foods/malai-chaap-roll.jpg`, caption: "malai chaap roll", kind: "Food" },
+  { src: `/images/foods/kadai-chaap.jpg`, caption: "kadai chaap", kind: "Food" },
+  { src: `/images/foods/honey-chilli-potato.jpg`, caption: "honey chilli potato", kind: "Food" },
+  { src: `/images/foods/cold-coffee.jpg`, caption: "cold coffee", kind: "Food" },
+  { src: `/images/foods/family-combo.jpg`, caption: "family combo", kind: "Food" },
+  { src: `/images/foods/paneer-tikka-chaap.jpg`, caption: "paneer tikka chaap", kind: "Food" },
+  { src: `/images/foods/veg-fried-rice.jpg`, caption: "veg fried rice", kind: "Food" },
+  { src: `/images/foods/shahi-paneer.jpg`, caption: "shahi paneer", kind: "Food" },
+  { src: `/images/foods/crispy-momos.jpg`, caption: "crispy momos", kind: "Food" },
+  { src: `/images/foods/butter-naan.jpg`, caption: "butter naan", kind: "Food" },
 ];
 
 export type BulkOrder = {
