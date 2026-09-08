@@ -14,16 +14,463 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      bulk_orders: {
+        Row: {
+          company: string
+          created_at: string
+          customer_name: string
+          delivery_at: string
+          email: string
+          id: string
+          items: string
+          notes: string
+          phone: string
+          qty: number
+          quoted: number | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          company?: string
+          created_at?: string
+          customer_name: string
+          delivery_at?: string
+          email?: string
+          id?: string
+          items?: string
+          notes?: string
+          phone: string
+          qty?: number
+          quoted?: number | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          company?: string
+          created_at?: string
+          customer_name?: string
+          delivery_at?: string
+          email?: string
+          id?: string
+          items?: string
+          notes?: string
+          phone?: string
+          qty?: number
+          quoted?: number | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      categories: {
+        Row: {
+          active: boolean
+          icon: string
+          id: string
+          name: string
+          sort_order: number
+        }
+        Insert: {
+          active?: boolean
+          icon?: string
+          id: string
+          name: string
+          sort_order?: number
+        }
+        Update: {
+          active?: boolean
+          icon?: string
+          id?: string
+          name?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      delivery_locations: {
+        Row: {
+          lat: number
+          lng: number
+          order_id: string
+          partner_id: string
+          updated_at: string
+        }
+        Insert: {
+          lat: number
+          lng: number
+          order_id: string
+          partner_id: string
+          updated_at?: string
+        }
+        Update: {
+          lat?: number
+          lng?: number
+          order_id?: string
+          partner_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "delivery_locations_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: true
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      menu_items: {
+        Row: {
+          available: boolean
+          best_seller: boolean
+          category_id: string
+          created_at: string
+          description: string
+          full_price: number | null
+          half_price: number | null
+          id: string
+          image: string
+          is_new: boolean
+          is_veg: boolean
+          name: string
+          price: number
+          rating: number
+          sort_order: number
+          spicy: boolean
+          updated_at: string
+        }
+        Insert: {
+          available?: boolean
+          best_seller?: boolean
+          category_id: string
+          created_at?: string
+          description?: string
+          full_price?: number | null
+          half_price?: number | null
+          id: string
+          image?: string
+          is_new?: boolean
+          is_veg?: boolean
+          name: string
+          price?: number
+          rating?: number
+          sort_order?: number
+          spicy?: boolean
+          updated_at?: string
+        }
+        Update: {
+          available?: boolean
+          best_seller?: boolean
+          category_id?: string
+          created_at?: string
+          description?: string
+          full_price?: number | null
+          half_price?: number | null
+          id?: string
+          image?: string
+          is_new?: boolean
+          is_veg?: boolean
+          name?: string
+          price?: number
+          rating?: number
+          sort_order?: number
+          spicy?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "menu_items_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      offers: {
+        Row: {
+          active: boolean
+          badge: string
+          code: string | null
+          created_at: string
+          description: string
+          discount_type: string
+          emoji: string
+          expires_at: string | null
+          id: string
+          label: string
+          max_discount: number | null
+          min_order: number
+          priority: number
+          tone: string
+          updated_at: string
+          value: number
+        }
+        Insert: {
+          active?: boolean
+          badge?: string
+          code?: string | null
+          created_at?: string
+          description?: string
+          discount_type?: string
+          emoji?: string
+          expires_at?: string | null
+          id?: string
+          label: string
+          max_discount?: number | null
+          min_order?: number
+          priority?: number
+          tone?: string
+          updated_at?: string
+          value?: number
+        }
+        Update: {
+          active?: boolean
+          badge?: string
+          code?: string | null
+          created_at?: string
+          description?: string
+          discount_type?: string
+          emoji?: string
+          expires_at?: string | null
+          id?: string
+          label?: string
+          max_discount?: number | null
+          min_order?: number
+          priority?: number
+          tone?: string
+          updated_at?: string
+          value?: number
+        }
+        Relationships: []
+      }
+      order_items: {
+        Row: {
+          id: string
+          item_id: string
+          name: string
+          order_id: string
+          portion: string
+          price: number
+          qty: number
+        }
+        Insert: {
+          id?: string
+          item_id: string
+          name: string
+          order_id: string
+          portion?: string
+          price?: number
+          qty?: number
+        }
+        Update: {
+          id?: string
+          item_id?: string
+          name?: string
+          order_id?: string
+          portion?: string
+          price?: number
+          qty?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      order_status_history: {
+        Row: {
+          changed_by: string | null
+          changed_by_name: string
+          created_at: string
+          id: string
+          note: string
+          order_id: string
+          status: string
+        }
+        Insert: {
+          changed_by?: string | null
+          changed_by_name?: string
+          created_at?: string
+          id?: string
+          note?: string
+          order_id: string
+          status: string
+        }
+        Update: {
+          changed_by?: string | null
+          changed_by_name?: string
+          created_at?: string
+          id?: string
+          note?: string
+          order_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_status_history_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          address: string
+          collected_mode: string | null
+          created_at: string
+          customer_id: string | null
+          customer_name: string
+          delivery_fee: number
+          delivery_partner_id: string | null
+          discount: number
+          id: string
+          landmark: string
+          lat: number | null
+          lng: number | null
+          mode: string
+          notes: string
+          offer_id: string | null
+          order_code: string
+          payment_method: string
+          payment_status: string
+          phone: string
+          status: string
+          subtotal: number
+          total: number
+          updated_at: string
+        }
+        Insert: {
+          address?: string
+          collected_mode?: string | null
+          created_at?: string
+          customer_id?: string | null
+          customer_name: string
+          delivery_fee?: number
+          delivery_partner_id?: string | null
+          discount?: number
+          id?: string
+          landmark?: string
+          lat?: number | null
+          lng?: number | null
+          mode?: string
+          notes?: string
+          offer_id?: string | null
+          order_code: string
+          payment_method?: string
+          payment_status?: string
+          phone: string
+          status?: string
+          subtotal?: number
+          total?: number
+          updated_at?: string
+        }
+        Update: {
+          address?: string
+          collected_mode?: string | null
+          created_at?: string
+          customer_id?: string | null
+          customer_name?: string
+          delivery_fee?: number
+          delivery_partner_id?: string | null
+          discount?: number
+          id?: string
+          landmark?: string
+          lat?: number | null
+          lng?: number | null
+          mode?: string
+          notes?: string
+          offer_id?: string | null
+          order_code?: string
+          payment_method?: string
+          payment_status?: string
+          phone?: string
+          status?: string
+          subtotal?: number
+          total?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: false
+            referencedRelation: "offers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string
+          id: string
+          phone: string | null
+          updated_at: string
+          user_code: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          id: string
+          phone?: string | null
+          updated_at?: string
+          user_code: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_code?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "delivery" | "customer"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +597,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "delivery", "customer"],
+    },
   },
 } as const
