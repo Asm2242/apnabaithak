@@ -73,7 +73,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "thali-thali",
     "name": "Thali",
-    "image": "https://apnabaithak.vercel.app/images/foods/thali.jpg",
+    "image": "/images/foods/thali.jpg",
     "price": 199,
     "half": null,
     "full": null,
@@ -87,7 +87,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "thali-special-thali",
     "name": "Special Thali",
-    "image": "https://apnabaithak.vercel.app/images/foods/special-thali.jpg",
+    "image": "/images/foods/special-thali.jpg",
     "price": 299,
     "half": null,
     "full": null,
@@ -101,7 +101,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "combos-mini-combo",
     "name": "Mini Combo",
-    "image": "https://apnabaithak.vercel.app/images/foods/mini-combo.jpg",
+    "image": "/images/foods/mini-combo.jpg",
     "price": 149,
     "half": null,
     "full": null,
@@ -115,7 +115,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "combos-family-combo",
     "name": "Family Combo",
-    "image": "https://apnabaithak.vercel.app/images/foods/family-combo.jpg",
+    "image": "/images/foods/family-combo.jpg",
     "price": 499,
     "half": null,
     "full": null,
@@ -129,7 +129,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "combos-party-combo",
     "name": "Party Combo",
-    "image": "https://apnabaithak.vercel.app/images/foods/party-combo.jpg",
+    "image": "/images/foods/party-combo.jpg",
     "price": 599,
     "half": null,
     "full": null,
@@ -143,7 +143,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "item-1788171611929-s4gk1s",
     "name": "Baithak Special combo",
-    "image": "https://apnabaithak.vercel.app/images/foods/family-combo.jpg",
+    "image": "/images/foods/family-combo.jpg",
     "price": 899,
     "half": null,
     "full": null,
@@ -157,7 +157,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "chinese-schezwan-noodles",
     "name": "Schezwan Noodles",
-    "image": "https://apnabaithak.vercel.app/images/foods/schezwan-noodles.jpg",
+    "image": "/images/foods/schezwan-noodles.jpg",
     "price": 230,
     "half": 120,
     "full": 230,
@@ -171,7 +171,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "chinese-hakka-noodles",
     "name": "Hakka Noodles",
-    "image": "https://apnabaithak.vercel.app/images/foods/hakka-noodles.jpg",
+    "image": "/images/foods/hakka-noodles.jpg",
     "price": 230,
     "half": 120,
     "full": 230,
@@ -185,7 +185,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "chinese-singapuri-noodles",
     "name": "Singapuri Noodles",
-    "image": "https://apnabaithak.vercel.app/images/foods/singapuri-noodles.jpg",
+    "image": "/images/foods/singapuri-noodles.jpg",
     "price": 230,
     "half": 120,
     "full": 230,
@@ -199,7 +199,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "chinese-chilli-garlic-noodles",
     "name": "Chilli Garlic Noodles",
-    "image": "https://apnabaithak.vercel.app/images/foods/chilli-garlic-noodles.jpg",
+    "image": "/images/foods/chilli-garlic-noodles.jpg",
     "price": 230,
     "half": 120,
     "full": 230,
@@ -213,7 +213,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "chinese-paneer-noodles",
     "name": "Paneer Noodles",
-    "image": "https://apnabaithak.vercel.app/images/foods/paneer-noodles.jpg",
+    "image": "/images/foods/paneer-noodles.jpg",
     "price": 230,
     "half": 120,
     "full": 230,
@@ -227,7 +227,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "chinese-veg-noodles",
     "name": "Veg Noodles",
-    "image": "https://apnabaithak.vercel.app/images/foods/veg-noodles.jpg",
+    "image": "/images/foods/veg-noodles.jpg",
     "price": 230,
     "half": 120,
     "full": 230,
@@ -241,7 +241,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "chinese-schezwan-fried-rice",
     "name": "Schezwan Fried Rice",
-    "image": "https://apnabaithak.vercel.app/images/foods/schezwan-fried-rice.jpg",
+    "image": "/images/foods/schezwan-fried-rice.jpg",
     "price": 190,
     "half": 100,
     "full": 190,
@@ -255,7 +255,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "chinese-paneer-fried-rice",
     "name": "Paneer Fried Rice",
-    "image": "https://apnabaithak.vercel.app/images/foods/paneer-fried-rice.jpg",
+    "image": "/images/foods/paneer-fried-rice.jpg",
     "price": 230,
     "half": 120,
     "full": 230,
@@ -269,7 +269,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "chinese-veg-fried-rice",
     "name": "Veg Fried Rice",
-    "image": "https://apnabaithak.vercel.app/images/foods/veg-fried-rice.jpg",
+    "image": "/images/foods/veg-fried-rice.jpg",
     "price": 230,
     "half": 120,
     "full": 230,
@@ -283,7 +283,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "chinese-butter-noodles",
     "name": "Butter Noodles",
-    "image": "https://apnabaithak.vercel.app/images/foods/butter-noodles.jpg",
+    "image": "/images/foods/butter-noodles.jpg",
     "price": 230,
     "half": 120,
     "full": 230,
@@ -297,7 +297,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "chinese-fried-rice",
     "name": "Fried Rice",
-    "image": "https://apnabaithak.vercel.app/images/foods/fried-rice.jpg",
+    "image": "/images/foods/fried-rice.jpg",
     "price": 230,
     "half": 120,
     "full": 230,
@@ -311,7 +311,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "chinese-chilli-paneer",
     "name": "Chilli Paneer",
-    "image": "https://apnabaithak.vercel.app/images/foods/chilli-paneer.jpg",
+    "image": "/images/foods/chilli-paneer.jpg",
     "price": 290,
     "half": 150,
     "full": 290,
@@ -325,7 +325,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "chinese-chilli-potato",
     "name": "Chilli Potato",
-    "image": "https://apnabaithak.vercel.app/images/foods/chilli-potato.jpg",
+    "image": "/images/foods/chilli-potato.jpg",
     "price": 230,
     "half": 120,
     "full": 230,
@@ -339,7 +339,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "chinese-honey-chilli-potato",
     "name": "Honey Chilli Potato",
-    "image": "https://apnabaithak.vercel.app/images/foods/honey-chilli-potato.jpg",
+    "image": "/images/foods/honey-chilli-potato.jpg",
     "price": 290,
     "half": 150,
     "full": 290,
@@ -353,7 +353,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "chinese-finger-chips",
     "name": "Finger Chips",
-    "image": "https://apnabaithak.vercel.app/images/foods/finger-chips.jpg",
+    "image": "/images/foods/finger-chips.jpg",
     "price": 170,
     "half": 90,
     "full": 170,
@@ -367,7 +367,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "roasted-chaap-malai-chaap",
     "name": "Malai Chaap",
-    "image": "https://apnabaithak.vercel.app/images/foods/malai-chaap.jpg",
+    "image": "/images/foods/malai-chaap.jpg",
     "price": 290,
     "half": 150,
     "full": 290,
@@ -381,7 +381,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "roasted-chaap-chatpata-chaap",
     "name": "Chatpata Chaap",
-    "image": "https://apnabaithak.vercel.app/images/foods/chatpata-chaap.jpg",
+    "image": "/images/foods/chatpata-chaap.jpg",
     "price": 290,
     "half": 150,
     "full": 290,
@@ -395,7 +395,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "roasted-chaap-afghani-chaap",
     "name": "Afghani Chaap",
-    "image": "https://apnabaithak.vercel.app/images/foods/afghani-chaap.jpg",
+    "image": "/images/foods/afghani-chaap.jpg",
     "price": 290,
     "half": 150,
     "full": 290,
@@ -409,7 +409,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "roasted-chaap-k-f-c-chaap",
     "name": "K.F.C. Chaap",
-    "image": "https://apnabaithak.vercel.app/images/foods/k-f-c-chaap.jpg",
+    "image": "/images/foods/k-f-c-chaap.jpg",
     "price": 290,
     "half": 150,
     "full": 290,
@@ -423,7 +423,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "roasted-chaap-k-f-c-lajpati-chaap",
     "name": "K.F.C. Lajpati Chaap",
-    "image": "https://apnabaithak.vercel.app/images/foods/k-f-c-lajpati-chaap.jpg",
+    "image": "/images/foods/k-f-c-lajpati-chaap.jpg",
     "price": 290,
     "half": 150,
     "full": 290,
@@ -437,7 +437,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "roasted-chaap-achari-chaap",
     "name": "Achari Chaap",
-    "image": "https://apnabaithak.vercel.app/images/foods/achari-chaap.jpg",
+    "image": "/images/foods/achari-chaap.jpg",
     "price": 290,
     "half": 150,
     "full": 290,
@@ -451,7 +451,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "roasted-chaap-nagin-chaap",
     "name": "Nagin Chaap",
-    "image": "https://apnabaithak.vercel.app/images/foods/nagin-chaap.jpg",
+    "image": "/images/foods/nagin-chaap.jpg",
     "price": 290,
     "half": 150,
     "full": 290,
@@ -465,7 +465,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "roasted-chaap-lajpati-nagin-chaap",
     "name": "Lajpati Nagin Chaap",
-    "image": "https://apnabaithak.vercel.app/images/foods/lajpati-nagin-chaap.jpg",
+    "image": "/images/foods/lajpati-nagin-chaap.jpg",
     "price": 310,
     "half": 160,
     "full": 310,
@@ -479,7 +479,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "roasted-chaap-amritsari-chaap",
     "name": "Amritsari Chaap",
-    "image": "https://apnabaithak.vercel.app/images/foods/amritsari-chaap.jpg",
+    "image": "/images/foods/amritsari-chaap.jpg",
     "price": 290,
     "half": 150,
     "full": 290,
@@ -493,7 +493,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "roasted-chaap-veg-chicken-tikka-chaap",
     "name": "Veg. Chicken Tikka Chaap",
-    "image": "https://apnabaithak.vercel.app/images/foods/veg-chicken-tikka-chaap.jpg",
+    "image": "/images/foods/veg-chicken-tikka-chaap.jpg",
     "price": 290,
     "half": 150,
     "full": 290,
@@ -507,7 +507,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "roasted-chaap-pagga-daku-chaap",
     "name": "Pagga Daku Chaap",
-    "image": "https://apnabaithak.vercel.app/images/foods/pagga-daku-chaap.jpg",
+    "image": "/images/foods/pagga-daku-chaap.jpg",
     "price": 290,
     "half": 150,
     "full": 290,
@@ -521,7 +521,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "roasted-chaap-paneer-tikka-chaap",
     "name": "Paneer Tikka Chaap",
-    "image": "https://apnabaithak.vercel.app/images/foods/paneer-tikka-chaap.jpg",
+    "image": "/images/foods/paneer-tikka-chaap.jpg",
     "price": 350,
     "half": 180,
     "full": 350,
@@ -535,7 +535,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "roasted-chaap-paneer-malai-tikka",
     "name": "Paneer Malai Tikka",
-    "image": "https://apnabaithak.vercel.app/images/foods/paneer-malai-tikka.jpg",
+    "image": "/images/foods/paneer-malai-tikka.jpg",
     "price": 350,
     "half": 180,
     "full": 350,
@@ -549,7 +549,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "roasted-chaap-paneer-kurkure",
     "name": "Paneer Kurkure",
-    "image": "https://apnabaithak.vercel.app/images/foods/paneer-kurkure.jpg",
+    "image": "/images/foods/paneer-kurkure.jpg",
     "price": 350,
     "half": 180,
     "full": 350,
@@ -563,7 +563,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "roasted-chaap-chilli-chaap",
     "name": "Chilli Chaap",
-    "image": "https://apnabaithak.vercel.app/images/foods/chilli-chaap.jpg",
+    "image": "/images/foods/chilli-chaap.jpg",
     "price": 290,
     "half": 150,
     "full": 290,
@@ -577,7 +577,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "chaap-rolls-malai-chaap-roll",
     "name": "Malai Chaap Roll",
-    "image": "https://apnabaithak.vercel.app/images/foods/malai-chaap-roll.jpg",
+    "image": "/images/foods/malai-chaap-roll.jpg",
     "price": 160,
     "half": null,
     "full": null,
@@ -591,7 +591,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "chaap-rolls-chatpati-chaap-roll",
     "name": "Chatpati Chaap Roll",
-    "image": "https://apnabaithak.vercel.app/images/foods/chatpati-chaap-roll.jpg",
+    "image": "/images/foods/chatpati-chaap-roll.jpg",
     "price": 160,
     "half": null,
     "full": null,
@@ -605,7 +605,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "chaap-rolls-afghani-chaap-roll",
     "name": "Afghani Chaap Roll",
-    "image": "https://apnabaithak.vercel.app/images/foods/afghani-chaap-roll.jpg",
+    "image": "/images/foods/afghani-chaap-roll.jpg",
     "price": 160,
     "half": null,
     "full": null,
@@ -619,7 +619,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "chaap-rolls-achari-chaap-roll",
     "name": "Achari Chaap Roll",
-    "image": "https://apnabaithak.vercel.app/images/foods/achari-chaap-roll.jpg",
+    "image": "/images/foods/achari-chaap-roll.jpg",
     "price": 160,
     "half": null,
     "full": null,
@@ -633,7 +633,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "chaap-rolls-k-f-c-chaap-roll",
     "name": "K.F.C. Chaap Roll",
-    "image": "https://apnabaithak.vercel.app/images/foods/k-f-c-chaap-roll.jpg",
+    "image": "/images/foods/k-f-c-chaap-roll.jpg",
     "price": 160,
     "half": null,
     "full": null,
@@ -647,7 +647,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "chaap-rolls-jagga-daku-chaap-roll",
     "name": "Jagga Daku Chaap Roll",
-    "image": "https://apnabaithak.vercel.app/images/foods/jagga-daku-chaap-roll.jpg",
+    "image": "/images/foods/jagga-daku-chaap-roll.jpg",
     "price": 160,
     "half": null,
     "full": null,
@@ -661,7 +661,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "main-course-veg-chaap-rogan-josh",
     "name": "Veg. Chaap Rogan Josh",
-    "image": "https://apnabaithak.vercel.app/images/foods/veg-chaap-rogan-josh.jpg",
+    "image": "/images/foods/veg-chaap-rogan-josh.jpg",
     "price": 290,
     "half": 150,
     "full": 290,
@@ -675,7 +675,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "main-course-kadai-chaap",
     "name": "Kadai Chaap",
-    "image": "https://apnabaithak.vercel.app/images/foods/kadai-chaap.jpg",
+    "image": "/images/foods/kadai-chaap.jpg",
     "price": 290,
     "half": 150,
     "full": 290,
@@ -689,7 +689,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "main-course-kadai-paneer",
     "name": "Kadai Paneer",
-    "image": "https://apnabaithak.vercel.app/images/foods/kadai-paneer.jpg",
+    "image": "/images/foods/kadai-paneer.jpg",
     "price": 290,
     "half": 150,
     "full": 290,
@@ -703,7 +703,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "main-course-paneer-butter-masala",
     "name": "Paneer Butter Masala",
-    "image": "https://apnabaithak.vercel.app/images/foods/paneer-butter-masala.jpg",
+    "image": "/images/foods/paneer-butter-masala.jpg",
     "price": 350,
     "half": 180,
     "full": 350,
@@ -717,7 +717,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "main-course-shahi-paneer",
     "name": "Shahi Paneer",
-    "image": "https://apnabaithak.vercel.app/images/foods/shahi-paneer.jpg",
+    "image": "/images/foods/shahi-paneer.jpg",
     "price": 350,
     "half": 180,
     "full": 350,
@@ -731,7 +731,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "main-course-chaap-do-pyaza",
     "name": "Chaap Do Pyaza",
-    "image": "https://apnabaithak.vercel.app/images/foods/chaap-do-pyaza.jpg",
+    "image": "/images/foods/chaap-do-pyaza.jpg",
     "price": 290,
     "half": 150,
     "full": 290,
@@ -745,7 +745,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "main-course-paneer-do-pyaza",
     "name": "Paneer Do Pyaza",
-    "image": "https://apnabaithak.vercel.app/images/foods/paneer-do-pyaza.jpg",
+    "image": "/images/foods/paneer-do-pyaza.jpg",
     "price": 290,
     "half": 150,
     "full": 290,
@@ -759,7 +759,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "main-course-soya-chaap-keema",
     "name": "Soya Chaap Keema",
-    "image": "https://apnabaithak.vercel.app/images/foods/soya-chaap-keema.jpg",
+    "image": "/images/foods/soya-chaap-keema.jpg",
     "price": 290,
     "half": 150,
     "full": 290,
@@ -773,7 +773,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "main-course-rumali-roti-1-pc",
     "name": "Rumali Roti (1 Pc.)",
-    "image": "https://apnabaithak.vercel.app/images/foods/rumali-roti-1-pc.jpg",
+    "image": "/images/foods/rumali-roti-1-pc.jpg",
     "price": 15,
     "half": null,
     "full": null,
@@ -787,7 +787,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "main-course-plain-rice",
     "name": "Plain Rice",
-    "image": "https://apnabaithak.vercel.app/images/foods/plain-rice.jpg",
+    "image": "/images/foods/plain-rice.jpg",
     "price": 90,
     "half": 50,
     "full": 90,
@@ -801,7 +801,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "momos-steam-momos-6-pc",
     "name": "Steam Momos (6 Pc.)",
-    "image": "https://apnabaithak.vercel.app/images/foods/steam-momos-6-pc.jpg",
+    "image": "/images/foods/steam-momos-6-pc.jpg",
     "price": 80,
     "half": null,
     "full": null,
@@ -815,7 +815,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "momos-fried-momos",
     "name": "Fried Momos",
-    "image": "https://apnabaithak.vercel.app/images/foods/fried-momos.jpg",
+    "image": "/images/foods/fried-momos.jpg",
     "price": 90,
     "half": null,
     "full": null,
@@ -829,7 +829,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "momos-paneer-momos-steam",
     "name": "Paneer Momos Steam",
-    "image": "https://apnabaithak.vercel.app/images/foods/paneer-momos-steam.jpg",
+    "image": "/images/foods/paneer-momos-steam.jpg",
     "price": 100,
     "half": null,
     "full": null,
@@ -843,7 +843,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "momos-paneer-momos-fried",
     "name": "Paneer Momos Fried",
-    "image": "https://apnabaithak.vercel.app/images/foods/paneer-momos-fried.jpg",
+    "image": "/images/foods/paneer-momos-fried.jpg",
     "price": 120,
     "half": null,
     "full": null,
@@ -857,7 +857,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "momos-paneer-momos",
     "name": "Paneer Momos",
-    "image": "https://apnabaithak.vercel.app/images/foods/paneer-momos.jpg",
+    "image": "/images/foods/paneer-momos.jpg",
     "price": 120,
     "half": null,
     "full": null,
@@ -871,7 +871,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "momos-veg-paneer-momos",
     "name": "Veg/Paneer Momos",
-    "image": "https://apnabaithak.vercel.app/images/foods/veg-paneer-momos.jpg",
+    "image": "/images/foods/veg-paneer-momos.jpg",
     "price": 120,
     "half": null,
     "full": null,
@@ -885,7 +885,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "momos-soya-chaap-momos",
     "name": "Soya Chaap Momos",
-    "image": "https://apnabaithak.vercel.app/images/foods/soya-chaap-momos.jpg",
+    "image": "/images/foods/soya-chaap-momos.jpg",
     "price": 150,
     "half": null,
     "full": null,
@@ -899,7 +899,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "momos-crispy-momos",
     "name": "Crispy Momos",
-    "image": "https://apnabaithak.vercel.app/images/foods/crispy-momos.jpg",
+    "image": "/images/foods/crispy-momos.jpg",
     "price": 120,
     "half": null,
     "full": null,
@@ -913,7 +913,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "momos-tandoori-momos",
     "name": "Tandoori Momos",
-    "image": "https://apnabaithak.vercel.app/images/foods/tandoori-momos.jpg",
+    "image": "/images/foods/tandoori-momos.jpg",
     "price": 150,
     "half": null,
     "full": null,
@@ -927,7 +927,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "momos-tandoori-paneer-momos",
     "name": "Tandoori Paneer Momos",
-    "image": "https://apnabaithak.vercel.app/images/foods/tandoori-paneer-momos.jpg",
+    "image": "/images/foods/tandoori-paneer-momos.jpg",
     "price": 150,
     "half": null,
     "full": null,
@@ -941,7 +941,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "momos-tandoori-momos-momos",
     "name": "Tandoori Momos Momos",
-    "image": "https://apnabaithak.vercel.app/images/foods/tandoori-momos-momos.jpg",
+    "image": "/images/foods/tandoori-momos-momos.jpg",
     "price": 180,
     "half": null,
     "full": null,
@@ -955,7 +955,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "momos-woleganic-momos",
     "name": "Woleganic Momos",
-    "image": "https://apnabaithak.vercel.app/images/foods/woleganic-momos.jpg",
+    "image": "/images/foods/woleganic-momos.jpg",
     "price": 120,
     "half": null,
     "full": null,
@@ -969,7 +969,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "momos-chilli-momos",
     "name": "Chilli Momos",
-    "image": "https://apnabaithak.vercel.app/images/foods/chilli-momos.jpg",
+    "image": "/images/foods/chilli-momos.jpg",
     "price": 120,
     "half": null,
     "full": null,
@@ -983,7 +983,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "momos-afghani-momos",
     "name": "Afghani Momos",
-    "image": "https://apnabaithak.vercel.app/images/foods/afghani-momos.jpg",
+    "image": "/images/foods/afghani-momos.jpg",
     "price": 160,
     "half": null,
     "full": null,
@@ -997,7 +997,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "momos-kurkure-momos",
     "name": "Kurkure Momos",
-    "image": "https://apnabaithak.vercel.app/images/foods/kurkure-momos.jpg",
+    "image": "/images/foods/kurkure-momos.jpg",
     "price": 160,
     "half": null,
     "full": null,
@@ -1011,7 +1011,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "momos-peri-peri-momos",
     "name": "Peri Peri Momos",
-    "image": "https://apnabaithak.vercel.app/images/foods/peri-peri-momos.jpg",
+    "image": "/images/foods/peri-peri-momos.jpg",
     "price": 160,
     "half": null,
     "full": null,
@@ -1025,7 +1025,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "momos-achari-momos",
     "name": "Achari Momos",
-    "image": "https://apnabaithak.vercel.app/images/foods/achari-momos.jpg",
+    "image": "/images/foods/achari-momos.jpg",
     "price": 180,
     "half": null,
     "full": null,
@@ -1039,7 +1039,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "burgers-veg-burger",
     "name": "Veg Burger",
-    "image": "https://apnabaithak.vercel.app/images/foods/veg-burger.jpg",
+    "image": "/images/foods/veg-burger.jpg",
     "price": 79,
     "half": null,
     "full": null,
@@ -1053,7 +1053,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "burgers-cheese-burger",
     "name": "Cheese Burger",
-    "image": "https://apnabaithak.vercel.app/images/foods/cheese-burger.jpg",
+    "image": "/images/foods/cheese-burger.jpg",
     "price": 99,
     "half": null,
     "full": null,
@@ -1067,7 +1067,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "burgers-aloo-tikki-burger",
     "name": "Aloo Tikki Burger",
-    "image": "https://apnabaithak.vercel.app/images/foods/aloo-tikki-burger.jpg",
+    "image": "/images/foods/aloo-tikki-burger.jpg",
     "price": 89,
     "half": null,
     "full": null,
@@ -1081,7 +1081,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "burgers-paneer-burger",
     "name": "Paneer Burger",
-    "image": "https://apnabaithak.vercel.app/images/foods/paneer-burger.jpg",
+    "image": "/images/foods/paneer-burger.jpg",
     "price": 119,
     "half": null,
     "full": null,
@@ -1095,7 +1095,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "burgers-veg-grill-sandwich",
     "name": "Veg Grill Sandwich",
-    "image": "https://apnabaithak.vercel.app/images/foods/veg-grill-sandwich.jpg",
+    "image": "/images/foods/veg-grill-sandwich.jpg",
     "price": 99,
     "half": null,
     "full": null,
@@ -1109,7 +1109,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "burgers-cheese-sandwich",
     "name": "Cheese Sandwich",
-    "image": "https://apnabaithak.vercel.app/images/foods/cheese-sandwich.jpg",
+    "image": "/images/foods/cheese-sandwich.jpg",
     "price": 109,
     "half": null,
     "full": null,
@@ -1123,7 +1123,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "beverages-cold-coffee",
     "name": "Cold Coffee",
-    "image": "https://apnabaithak.vercel.app/images/foods/cold-coffee.jpg",
+    "image": "/images/foods/cold-coffee.jpg",
     "price": 89,
     "half": null,
     "full": null,
@@ -1137,7 +1137,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "beverages-lassi-sweet-salted",
     "name": "Lassi (Sweet / Salted)",
-    "image": "https://apnabaithak.vercel.app/images/foods/lassi-sweet-salted.jpg",
+    "image": "/images/foods/lassi-sweet-salted.jpg",
     "price": 69,
     "half": null,
     "full": null,
@@ -1151,7 +1151,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "beverages-lemon-ice-tea",
     "name": "Lemon Ice Tea",
-    "image": "https://apnabaithak.vercel.app/images/foods/lemon-ice-tea.jpg",
+    "image": "/images/foods/lemon-ice-tea.jpg",
     "price": 69,
     "half": null,
     "full": null,
@@ -1165,7 +1165,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "beverages-fresh-lime-water",
     "name": "Fresh Lime Water",
-    "image": "https://apnabaithak.vercel.app/images/foods/fresh-lime-water.jpg",
+    "image": "/images/foods/fresh-lime-water.jpg",
     "price": 49,
     "half": null,
     "full": null,
@@ -1179,7 +1179,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "beverages-masala-lemonade",
     "name": "Masala Lemonade",
-    "image": "https://apnabaithak.vercel.app/images/foods/masala-lemonade.jpg",
+    "image": "/images/foods/masala-lemonade.jpg",
     "price": 59,
     "half": null,
     "full": null,
@@ -1193,7 +1193,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "beverages-soft-drinks",
     "name": "Soft Drinks",
-    "image": "https://apnabaithak.vercel.app/images/foods/soft-drinks.jpg",
+    "image": "/images/foods/soft-drinks.jpg",
     "price": 40,
     "half": null,
     "full": null,
@@ -1207,7 +1207,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "beverages-mineral-water",
     "name": "Mineral Water",
-    "image": "https://apnabaithak.vercel.app/images/foods/mineral-water.jpg",
+    "image": "/images/foods/mineral-water.jpg",
     "price": 20,
     "half": null,
     "full": null,
@@ -1221,7 +1221,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "extras-roti",
     "name": "Roti",
-    "image": "https://apnabaithak.vercel.app/images/foods/roti.jpg",
+    "image": "/images/foods/roti.jpg",
     "price": 15,
     "half": null,
     "full": null,
@@ -1235,7 +1235,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "extras-butter-roti",
     "name": "Butter Roti",
-    "image": "https://apnabaithak.vercel.app/images/foods/butter-roti.jpg",
+    "image": "/images/foods/butter-roti.jpg",
     "price": 20,
     "half": null,
     "full": null,
@@ -1249,7 +1249,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "extras-naan",
     "name": "Naan",
-    "image": "https://apnabaithak.vercel.app/images/foods/naan.jpg",
+    "image": "/images/foods/naan.jpg",
     "price": 30,
     "half": null,
     "full": null,
@@ -1263,7 +1263,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "extras-butter-naan",
     "name": "Butter Naan",
-    "image": "https://apnabaithak.vercel.app/images/foods/butter-naan.jpg",
+    "image": "/images/foods/butter-naan.jpg",
     "price": 35,
     "half": null,
     "full": null,
@@ -1277,7 +1277,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "extras-kulcha",
     "name": "Kulcha",
-    "image": "https://apnabaithak.vercel.app/images/foods/kulcha.jpg",
+    "image": "/images/foods/kulcha.jpg",
     "price": 35,
     "half": null,
     "full": null,
@@ -1291,7 +1291,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "extras-paneer-kulcha",
     "name": "Paneer Kulcha",
-    "image": "https://apnabaithak.vercel.app/images/foods/paneer-kulcha.jpg",
+    "image": "/images/foods/paneer-kulcha.jpg",
     "price": 60,
     "half": null,
     "full": null,
@@ -1305,7 +1305,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "extras-rice",
     "name": "Rice",
-    "image": "https://apnabaithak.vercel.app/images/foods/rice.jpg",
+    "image": "/images/foods/rice.jpg",
     "price": 70,
     "half": null,
     "full": null,
@@ -1319,7 +1319,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     "id": "extras-jeera-rice",
     "name": "Jeera Rice",
-    "image": "https://apnabaithak.vercel.app/images/foods/jeera-rice.jpg",
+    "image": "/images/foods/jeera-rice.jpg",
     "price": 90,
     "half": null,
     "full": null,
