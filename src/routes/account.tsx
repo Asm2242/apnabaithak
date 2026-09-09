@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Heart, LogOut, Mail, Phone, ShoppingBag, User } from "lucide-react";
 import { PageHero } from "@/components/PageHero";
 import { useShop } from "@/lib/shop";
+import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/account")({
   head: () => ({
