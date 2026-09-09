@@ -20,7 +20,20 @@ export const Route = createFileRoute("/account")({
 });
 
 function AccountPage() {
-  const { customer, logout, wishlist, ready } = useShop();
+  const { wishlist } = useShop();
+  const { user, profile, loading, signOut, isAdmin, isDelivery } = useAuth();
+  const ready = !loading;
+  const customer = user
+    ? {
+        name: profile?.full_name || user.email?.split("@")[0] || "Guest",
+        email: profile?.email || user.email || "",
+        phone: profile?.phone || "—",
+        code: profile?.user_code ?? "",
+      }
+    : null;
+  const logout = () => {
+    void signOut();
+  };
 
   return (
     <>
