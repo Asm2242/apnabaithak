@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Heart, Menu as MenuIcon, Phone, ShoppingCart, X } from "lucide-react";
 import { RESTAURANT } from "@/data/site";
 import { rupees, useShop } from "@/lib/shop";
+import { useAuth } from "@/lib/auth";
 
 const NAV = [
   { to: "/", label: "Home" },
