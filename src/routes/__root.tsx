@@ -133,6 +133,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <AuthProvider>
       <ShopProvider>
         {isAdmin ? (
           /* Required: nested routes render here. */
