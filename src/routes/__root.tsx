@@ -150,6 +150,7 @@ function RootComponent() {
           </div>
         )}
       </ShopProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
