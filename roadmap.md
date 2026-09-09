@@ -1,20 +1,20 @@
-# Apna Baithak clone — roadmap
+# Apna Baithak — roadmap
 
-## Phase 1 — Public site clone (in progress)
-- [ ] Design system (cream/orange/brown, Playfair + Poppins)
-- [ ] Header, footer, floating call/WhatsApp buttons
-- [ ] Cart / wishlist / customer auth store (localStorage)
-- [ ] Routes: / menu combos offers gallery about contact cart checkout login signup account orders wishlist
-- [ ] Head metadata per route
+## Done
+- Public site clone (all pages, cart/wishlist, responsive design)
+- Admin pages cloned (/admin, /admin/offers, /admin/order, /admin/patner)
+- Lovable Cloud enabled; schema: profiles, user_roles, categories, menu_items,
+  offers, bulk_orders, orders, order_items, order_status_history, delivery_locations
+- Seed data: 10 categories, 90 dishes, 5 offers, 3 partner enquiries
+- Images hosted locally (dishes, gallery, logo)
+- Real account system (signup/login/logout) with compulsory phone + member ID
+- /admin and subpages locked to admin role
 
-## Phase 2 — Admin (cloned design, local)
-- [ ] /admin dashboard (food menu manager + bulk tracker)
-- [ ] /admin/offers, /admin/order, /admin/patner
-
-## Phase 3 — Backend (Lovable Cloud)
-- [ ] Enable Cloud
-- [ ] Auth + user_roles table (admin role) gating /admin/*
-- [ ] Tables: offers, partners, orders (+ order items), menu availability
-- [ ] CRUD UI wired to DB for offers, partners, orders
-- [ ] /admin/order: full details, status updates, created/updated timestamps
-- [ ] Validation + success/error toasts on /admin/offers and /admin/patner
+## Next
+- [ ] Admin menu editor wired to database (create/edit/delete dish)
+- [ ] Offers + partners CRUD on database
+- [ ] Orders saved to database at checkout (server-validated totals)
+- [ ] Order status workflow + activity history (who changed what, when)
+- [ ] Delivery partner panel + live location tracking page for customer
+- [ ] Theme changer, language changer, AI support chat
+- [ ] GitHub upload (user must connect GitHub via the GitHub button)

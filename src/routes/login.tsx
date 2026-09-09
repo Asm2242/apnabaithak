@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { PageHero } from "@/components/PageHero";
-import { useShop } from "@/lib/shop";
+import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -19,20 +19,24 @@ export const Route = createFileRoute("/login")({
 });
 
 function LoginPage() {
-  const { login } = useShop();
+  const { signIn } = useAuth();
   const navigate = useNavigate();
-  const [identifier, setIdentifier] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
 
   return (
     <>
-      <PageHero eyebrow="Welcome back" title="Login" subtitle="Use your email or phone number." />
+      <PageHero eyebrow="Welcome back" title="Login" subtitle="Use your registered email." />
       <section className="mx-auto max-w-md px-5 py-14">
         <form
-          onSubmit={(e) => {
+          onSubmit={async (e) => {
             e.preventDefault();
-            const res = login(identifier.trim(), password);
+            setError("");
+            setBusy(true);
+            const res = await signIn(email.trim(), password);
+            setBusy(false);
             if (!res.ok) setError(res.error ?? "Login failed.");
             else navigate({ to: "/account" });
           }}
@@ -40,14 +44,15 @@ function LoginPage() {
         >
           <label className="block">
             <span className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-muted-foreground">
-              Email or phone
+              Email
             </span>
             <input
               required
-              value={identifier}
-              onChange={(e) => setIdentifier(e.target.value)}
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="input"
-              placeholder="you@example.com or 9876543210"
+              placeholder="you@example.com"
             />
           </label>
           <label className="mt-4 block">
@@ -68,8 +73,11 @@ function LoginPage() {
               {error}
             </p>
           )}
-          <button className="mt-6 w-full rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground">
-            Login
+          <button
+            disabled={busy}
+            className="mt-6 w-full rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground disabled:opacity-60"
+          >
+            {busy ? "Signing in…" : "Login"}
           </button>
           <p className="mt-5 text-center text-sm text-muted-foreground">
             New here?{" "}

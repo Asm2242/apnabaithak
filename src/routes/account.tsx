@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Heart, LogOut, Mail, Phone, ShoppingBag, User } from "lucide-react";
 import { PageHero } from "@/components/PageHero";
 import { useShop } from "@/lib/shop";
+import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/account")({
   head: () => ({
@@ -19,7 +20,20 @@ export const Route = createFileRoute("/account")({
 });
 
 function AccountPage() {
-  const { customer, logout, wishlist, ready } = useShop();
+  const { wishlist } = useShop();
+  const { user, profile, loading, signOut, isAdmin, isDelivery } = useAuth();
+  const ready = !loading;
+  const customer = user
+    ? {
+        name: profile?.full_name || user.email?.split("@")[0] || "Guest",
+        email: profile?.email || user.email || "",
+        phone: profile?.phone || "—",
+        code: profile?.user_code ?? "",
+      }
+    : null;
+  const logout = () => {
+    void signOut();
+  };
 
   return (
     <>
@@ -58,7 +72,14 @@ function AccountPage() {
                 </span>
                 <div>
                   <h2 className="font-display text-2xl font-bold">{customer.name}</h2>
-                  <p className="text-sm text-muted-foreground">Apna Baithak member</p>
+                  <p className="text-sm text-muted-foreground">
+                    Member ID: <strong>{customer.code || "—"}</strong>
+                  </p>
+                  {(isAdmin || isDelivery) && (
+                    <Link to="/admin" className="text-xs font-bold text-primary">
+                      Open admin panel →
+                    </Link>
+                  )}
                 </div>
               </div>
               <dl className="mt-6 grid gap-3 text-sm sm:grid-cols-2">

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Heart, Menu as MenuIcon, Phone, ShoppingCart, X } from "lucide-react";
 import { RESTAURANT } from "@/data/site";
 import { rupees, useShop } from "@/lib/shop";
+import { useAuth } from "@/lib/auth";
 
 const NAV = [
   { to: "/", label: "Home" },
@@ -15,7 +16,13 @@ const NAV = [
 ] as const;
 
 export function SiteHeader() {
-  const { count, subtotal, customer, logout } = useShop();
+  const { count, subtotal } = useShop();
+  const { profile, user, signOut } = useAuth();
+  const displayName = profile?.full_name || user?.email?.split("@")[0] || "";
+  const customer = user ? { name: displayName } : null;
+  const logout = () => {
+    void signOut();
+  };
   const [open, setOpen] = useState(false);
 
   return (
