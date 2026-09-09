@@ -23,6 +23,42 @@ const TABS = [
 ] as const;
 
 function AdminLayout() {
+  const { loading, user, isAdmin } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="grid min-h-screen place-items-center bg-background text-sm text-muted-foreground">
+        Checking access…
+      </div>
+    );
+  }
+
+  if (!user || !isAdmin) {
+    return (
+      <div className="grid min-h-screen place-items-center bg-background px-5">
+        <div className="max-w-md rounded-3xl border border-border bg-card p-10 text-center">
+          <h1 className="font-display text-2xl font-bold">Admin access only</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {user
+              ? "This account does not have admin permission."
+              : "Please log in with an admin account to open this panel."}
+          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+            <Link
+              to="/login"
+              className="rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground"
+            >
+              Login
+            </Link>
+            <Link to="/" className="rounded-full border border-border px-6 py-3 text-sm font-bold">
+              Back to site
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
