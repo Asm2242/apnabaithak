@@ -17,7 +17,7 @@ const NAV = [
 
 export function SiteHeader() {
   const { count, subtotal } = useShop();
-  const { profile, user, signOut, isAdmin } = useAuth();
+  const { profile, user, signOut } = useAuth();
   const displayName = profile?.full_name || user?.email?.split("@")[0] || "";
   const customer = user ? { name: displayName } : null;
   const logout = () => {
