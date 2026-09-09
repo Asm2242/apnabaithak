@@ -25,6 +25,7 @@ import { Route as OrdersRouteImport } from './routes/orders'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as WishlistRouteImport } from './routes/wishlist'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminMenuRouteImport } from './routes/admin.menu'
 import { Route as AdminOffersRouteImport } from './routes/admin.offers'
 import { Route as AdminOrderRouteImport } from './routes/admin.order'
 import { Route as AdminPatnerRouteImport } from './routes/admin.patner'
@@ -109,6 +110,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminMenuRoute = AdminMenuRouteImport.update({
+  id: '/menu',
+  path: '/menu',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminOffersRoute = AdminOffersRouteImport.update({
   id: '/offers',
   path: '/offers',
@@ -141,6 +147,7 @@ export interface FileRoutesByFullPath {
   '/orders': typeof OrdersRoute
   '/signup': typeof SignupRoute
   '/wishlist': typeof WishlistRoute
+  '/admin/menu': typeof AdminMenuRoute
   '/admin/offers': typeof AdminOffersRoute
   '/admin/order': typeof AdminOrderRoute
   '/admin/patner': typeof AdminPatnerRoute
@@ -161,6 +168,7 @@ export interface FileRoutesByTo {
   '/orders': typeof OrdersRoute
   '/signup': typeof SignupRoute
   '/wishlist': typeof WishlistRoute
+  '/admin/menu': typeof AdminMenuRoute
   '/admin/offers': typeof AdminOffersRoute
   '/admin/order': typeof AdminOrderRoute
   '/admin/patner': typeof AdminPatnerRoute
@@ -183,6 +191,7 @@ export interface FileRoutesById {
   '/orders': typeof OrdersRoute
   '/signup': typeof SignupRoute
   '/wishlist': typeof WishlistRoute
+  '/admin/menu': typeof AdminMenuRoute
   '/admin/offers': typeof AdminOffersRoute
   '/admin/order': typeof AdminOrderRoute
   '/admin/patner': typeof AdminPatnerRoute
@@ -206,6 +215,7 @@ export interface FileRouteTypes {
     | '/orders'
     | '/signup'
     | '/wishlist'
+    | '/admin/menu'
     | '/admin/offers'
     | '/admin/order'
     | '/admin/patner'
@@ -226,6 +236,7 @@ export interface FileRouteTypes {
     | '/orders'
     | '/signup'
     | '/wishlist'
+    | '/admin/menu'
     | '/admin/offers'
     | '/admin/order'
     | '/admin/patner'
@@ -247,6 +258,7 @@ export interface FileRouteTypes {
     | '/orders'
     | '/signup'
     | '/wishlist'
+    | '/admin/menu'
     | '/admin/offers'
     | '/admin/order'
     | '/admin/patner'
@@ -385,6 +397,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/menu': {
+      id: '/admin/menu'
+      path: '/menu'
+      fullPath: '/admin/menu'
+      preLoaderRoute: typeof AdminMenuRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/offers': {
       id: '/admin/offers'
       path: '/offers'
@@ -410,6 +429,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminMenuRoute: typeof AdminMenuRoute
   AdminOffersRoute: typeof AdminOffersRoute
   AdminOrderRoute: typeof AdminOrderRoute
   AdminPatnerRoute: typeof AdminPatnerRoute
@@ -417,6 +437,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminMenuRoute: AdminMenuRoute,
   AdminOffersRoute: AdminOffersRoute,
   AdminOrderRoute: AdminOrderRoute,
   AdminPatnerRoute: AdminPatnerRoute,

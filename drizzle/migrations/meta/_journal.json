@@ -8,6 +8,13 @@
       "when": 1788892730933,
       "tag": "0000_restaurant_core_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1788964850655,
+      "tag": "0001_first_user_becomes_admin",
+      "breakpoints": true
     }
   ]
 }
