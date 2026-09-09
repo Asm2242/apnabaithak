@@ -1,14 +1,18 @@
-# Welcome to your Lovable project
+# Apna Baithak Clone
+
+Create a faithful functional copy of https://apnabaithak.vercel.app. Inspect and reproduce all public pages, plus these routes the user supplied: /admin, /admin/offers, /admin/order, and /admin/patner. Match the original visual design, layout, content, responsiveness, and interactions as closely as possible. Do not omit pages found through site navigation.
 
 This project was built with [Lovable](https://lovable.dev).
 
+**Live app**: https://apnabaithak.lovable.app
+
 ## Build with Lovable
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/c81eaf85-4e2c-4897-aec9-ad2caafadbc7).
 
 - **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+- **Stay in sync**: every change made in Lovable is committed straight to this repository.
+- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
 
 ## Development
 
@@ -20,10 +24,3 @@ cd <repository-name>
 npm i
 npm run dev
 ```
-
-## Built with
-
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
