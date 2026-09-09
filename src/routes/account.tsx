@@ -72,7 +72,14 @@ function AccountPage() {
                 </span>
                 <div>
                   <h2 className="font-display text-2xl font-bold">{customer.name}</h2>
-                  <p className="text-sm text-muted-foreground">Apna Baithak member</p>
+                  <p className="text-sm text-muted-foreground">
+                    Member ID: <strong>{customer.code || "—"}</strong>
+                  </p>
+                  {(isAdmin || isDelivery) && (
+                    <Link to="/admin" className="text-xs font-bold text-primary">
+                      Open admin panel →
+                    </Link>
+                  )}
                 </div>
               </div>
               <dl className="mt-6 grid gap-3 text-sm sm:grid-cols-2">
