@@ -106,8 +106,11 @@ function AdminOrders() {
 
   const changeStatus = async (order: Order, next: OrderStatus) => {
     setMsg("");
-    const patch: Record<string, unknown> = { status: next, updated_at: new Date().toISOString() };
-    if (next === "delivered") patch['delivered_at'] = new Date().toISOString();
+    const patch = {
+      status: next,
+      updated_at: new Date().toISOString(),
+      ...(next === "delivered" ? { delivered_at: new Date().toISOString() } : {}),
+    };
     const { error } = await supabase.from("orders").update(patch).eq("id", order.id);
     if (error) {
       setMsg(error.message);
