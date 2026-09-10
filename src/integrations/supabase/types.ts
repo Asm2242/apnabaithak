@@ -321,11 +321,13 @@ export type Database = {
       }
       orders: {
         Row: {
+          accepted_at: string | null
           address: string
           collected_mode: string | null
           created_at: string
           customer_id: string | null
           customer_name: string
+          delivered_at: string | null
           delivery_fee: number
           delivery_partner_id: string | null
           discount: number
@@ -340,17 +342,21 @@ export type Database = {
           payment_method: string
           payment_status: string
           phone: string
+          picked_up_at: string | null
+          rejected_by: string[]
           status: string
           subtotal: number
           total: number
           updated_at: string
         }
         Insert: {
+          accepted_at?: string | null
           address?: string
           collected_mode?: string | null
           created_at?: string
           customer_id?: string | null
           customer_name: string
+          delivered_at?: string | null
           delivery_fee?: number
           delivery_partner_id?: string | null
           discount?: number
@@ -365,17 +371,21 @@ export type Database = {
           payment_method?: string
           payment_status?: string
           phone: string
+          picked_up_at?: string | null
+          rejected_by?: string[]
           status?: string
           subtotal?: number
           total?: number
           updated_at?: string
         }
         Update: {
+          accepted_at?: string | null
           address?: string
           collected_mode?: string | null
           created_at?: string
           customer_id?: string | null
           customer_name?: string
+          delivered_at?: string | null
           delivery_fee?: number
           delivery_partner_id?: string | null
           discount?: number
@@ -390,6 +400,8 @@ export type Database = {
           payment_method?: string
           payment_status?: string
           phone?: string
+          picked_up_at?: string | null
+          rejected_by?: string[]
           status?: string
           subtotal?: number
           total?: number
