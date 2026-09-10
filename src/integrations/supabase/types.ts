@@ -343,6 +343,8 @@ export type Database = {
           payment_status: string
           phone: string
           picked_up_at: string | null
+          razorpay_order_id: string | null
+          razorpay_payment_id: string | null
           rejected_by: string[]
           status: string
           subtotal: number
@@ -372,6 +374,8 @@ export type Database = {
           payment_status?: string
           phone: string
           picked_up_at?: string | null
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
           rejected_by?: string[]
           status?: string
           subtotal?: number
@@ -401,6 +405,8 @@ export type Database = {
           payment_status?: string
           phone?: string
           picked_up_at?: string | null
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
           rejected_by?: string[]
           status?: string
           subtotal?: number
