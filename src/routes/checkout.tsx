@@ -2,6 +2,13 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { PageHero } from "@/components/PageHero";
 import { rupees, useShop } from "@/lib/shop";
+import { useAuth } from "@/lib/auth";
+import {
+  confirmOnlinePayment,
+  placeOnlineOrder,
+  placeOrder,
+  type PlaceOrderInput,
+} from "@/lib/orders.functions";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -18,55 +25,127 @@ export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
 });
 
+declare global {
+  interface Window {
+    Razorpay?: new (options: Record<string, unknown>) => { open: () => void };
+  }
+}
+
+function loadRazorpayScript(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (window.Razorpay) return resolve();
+    const s = document.createElement("script");
+    s.src = "https://checkout.razorpay.com/v1/checkout.js";
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error("Could not load the payment window. Check your internet."));
+    document.body.appendChild(s);
+  });
+}
+
 function CheckoutPage() {
-  const { lines, subtotal, discount, delivery, total, bestOffer, clear, customer, ready } =
-    useShop();
+  const { lines, subtotal, discount, delivery, total, bestOffer, clear, ready } = useShop();
+  const { user, profile, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [placed, setPlaced] = useState<string | null>(null);
+  const [paidNote, setPaidNote] = useState(false);
   const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
   const [form, setForm] = useState({
-    name: customer?.name ?? "",
-    phone: customer?.phone ?? "",
+    name: profile?.full_name ?? "",
+    phone: profile?.phone ?? "",
     address: "",
     landmark: "",
     mode: "delivery" as "delivery" | "takeaway",
-    payment: "cod" as "cod" | "upi",
+    payment: "online" as "cod" | "upi" | "online",
     notes: "",
   });
 
   const set = (k: keyof typeof form) => (e: { target: { value: string } }) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
 
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const buildInput = (): PlaceOrderInput | null => {
     if (!/^\d{10}$/.test(form.phone)) {
       setError("Enter a valid 10-digit phone number.");
-      return;
+      return null;
     }
     if (form.mode === "delivery" && form.address.trim().length < 10) {
       setError("Please give a full delivery address.");
-      return;
+      return null;
     }
     setError("");
-    const id = `AB${Date.now().toString().slice(-6)}`;
-    const order = {
-      id,
-      placedAt: new Date().toISOString(),
-      items: lines,
-      subtotal,
-      discount,
-      delivery,
-      total,
-      ...form,
+    return {
+      items: lines.map((l) => ({ item_id: l.id, portion: l.portion, qty: l.qty })),
+      customer_name: form.name,
+      phone: form.phone,
+      address: form.address,
+      landmark: form.landmark,
+      notes: form.notes,
+      mode: form.mode,
+      payment_method: form.payment === "online" ? "razorpay" : form.payment,
     };
-    try {
-      const prev = JSON.parse(window.localStorage.getItem("ab_orders") ?? "[]");
-      window.localStorage.setItem("ab_orders", JSON.stringify([order, ...prev]));
-    } catch {
-      /* ignore */
+  };
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) {
+      navigate({ to: "/login" });
+      return;
     }
-    clear();
-    setPlaced(id);
+    const input = buildInput();
+    if (!input || busy) return;
+    setBusy(true);
+    try {
+      if (form.payment === "online") {
+        const created = await placeOnlineOrder({ data: input });
+        await loadRazorpayScript();
+        if (!window.Razorpay) throw new Error("Payment window could not open. Try again.");
+
+        const result = await new Promise<{ ok: boolean; error?: string }>((resolve) => {
+          const rzp = new window.Razorpay!({
+            key: created.razorpay_key_id,
+            amount: Math.round(created.total * 100),
+            currency: "INR",
+            name: "Apna Baithak",
+            description: `Order ${created.order_code}`,
+            order_id: created.razorpay_order_id,
+            prefill: { name: form.name, contact: form.phone, email: user.email ?? "" },
+            theme: { color: "#c2410c" },
+            modal: { ondismiss: () => resolve({ ok: false, error: "Payment was cancelled." }) },
+            handler: (resp: {
+              razorpay_payment_id: string;
+              razorpay_signature: string;
+            }) => {
+              confirmOnlinePayment({
+                data: {
+                  order_id: created.id,
+                  razorpay_payment_id: resp.razorpay_payment_id,
+                  razorpay_signature: resp.razorpay_signature,
+                },
+              })
+                .then(() => resolve({ ok: true }))
+                .catch((err: Error) => resolve({ ok: false, error: err.message }));
+            },
+          });
+          rzp.open();
+        });
+
+        if (!result.ok) {
+          setError(result.error ?? "Payment failed. Your order is saved — you can pay on delivery.");
+          setBusy(false);
+          return;
+        }
+        setPaidNote(true);
+        clear();
+        setPlaced(created.order_code);
+      } else {
+        const created = await placeOrder({ data: input });
+        clear();
+        setPlaced(created.order_code);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+    }
+    setBusy(false);
   };
 
   if (placed) {
@@ -78,7 +157,9 @@ function CheckoutPage() {
             <p className="text-sm text-muted-foreground">Your order number is</p>
             <p className="mt-2 font-display text-3xl font-bold text-primary">{placed}</p>
             <p className="mt-4 text-sm text-muted-foreground">
-              We'll call {form.phone} to confirm. Typical prep time is 25–35 minutes.
+              {paidNote
+                ? "Payment received. We'll start cooking right away."
+                : `We'll call ${form.phone} to confirm. Typical prep time is 25–35 minutes.`}
             </p>
             <div className="mt-7 flex flex-wrap justify-center gap-3">
               <Link
@@ -123,6 +204,13 @@ function CheckoutPage() {
       <PageHero eyebrow="Last step" title="Checkout" subtitle="Confirm your details and we'll start cooking." />
 
       <section className="mx-auto max-w-[1200px] px-5 py-12">
+        {!authLoading && !user && (
+          <div className="mb-6 rounded-2xl border border-primary/30 bg-primary/5 p-4 text-sm font-semibold">
+            Please <Link to="/login" className="text-primary underline">log in</Link> or{" "}
+            <Link to="/signup" className="text-primary underline">create an account</Link> to place
+            your order — it takes 30 seconds.
+          </div>
+        )}
         <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
           <form onSubmit={submit} className="rounded-3xl border border-border bg-card p-7">
             <h2 className="font-display text-xl font-bold">Delivery details</h2>
@@ -179,15 +267,16 @@ function CheckoutPage() {
             </Field>
 
             <h2 className="mt-8 font-display text-xl font-bold">Payment</h2>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <div className="mt-4 grid gap-3 sm:grid-cols-3">
               {[
+                { id: "online", t: "Pay online", d: "UPI, card, netbanking — pay now" },
                 { id: "cod", t: "Cash on delivery", d: "Pay when it arrives" },
                 { id: "upi", t: "UPI on delivery", d: "Scan and pay at the door" },
               ].map((p) => (
                 <button
                   key={p.id}
                   type="button"
-                  onClick={() => setForm((f) => ({ ...f, payment: p.id as "cod" | "upi" }))}
+                  onClick={() => setForm((f) => ({ ...f, payment: p.id as "cod" | "upi" | "online" }))}
                   className={`rounded-2xl border p-4 text-left ${
                     form.payment === p.id ? "border-primary bg-primary/5" : "border-border"
                   }`}
@@ -204,9 +293,21 @@ function CheckoutPage() {
               </p>
             )}
 
-            <button className="mt-7 w-full rounded-full bg-primary px-6 py-4 text-sm font-bold text-primary-foreground">
-              Place order • {rupees(total)}
+            <button
+              disabled={busy || authLoading}
+              className="mt-7 w-full rounded-full bg-primary px-6 py-4 text-sm font-bold text-primary-foreground disabled:opacity-60"
+            >
+              {busy
+                ? "Processing…"
+                : form.payment === "online"
+                  ? `Pay ${rupees(total)} securely`
+                  : `Place order • ${rupees(total)}`}
             </button>
+            {form.payment === "online" && (
+              <p className="mt-3 text-center text-xs text-muted-foreground">
+                Secure payment by Razorpay. Your card details never touch our servers.
+              </p>
+            )}
           </form>
 
           <aside className="h-fit rounded-3xl border border-border bg-card p-6 lg:sticky lg:top-24">
