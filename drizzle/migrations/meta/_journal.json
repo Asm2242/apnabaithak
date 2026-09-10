@@ -15,6 +15,20 @@
       "when": 1788964850655,
       "tag": "0001_first_user_becomes_admin",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789029958440,
+      "tag": "0002_storage_menu_policies_and_realtime",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1789030042507,
+      "tag": "0003_admin_manage_roles",
+      "breakpoints": true
     }
   ]
 }
