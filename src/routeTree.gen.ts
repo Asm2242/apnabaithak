@@ -29,6 +29,7 @@ import { Route as AdminMenuRouteImport } from './routes/admin.menu'
 import { Route as AdminOffersRouteImport } from './routes/admin.offers'
 import { Route as AdminOrderRouteImport } from './routes/admin.order'
 import { Route as AdminPatnerRouteImport } from './routes/admin.patner'
+import { Route as TrackCodeRouteImport } from './routes/track.$code'
 import { Route as ApiPublicMenuImageSplatRouteImport } from './routes/api/public/menu-image.$'
 
 const IndexRoute = IndexRouteImport.update({
@@ -131,6 +132,11 @@ const AdminPatnerRoute = AdminPatnerRouteImport.update({
   path: '/patner',
   getParentRoute: () => AdminRoute,
 } as any)
+const TrackCodeRoute = TrackCodeRouteImport.update({
+  id: '/track/$code',
+  path: '/track/$code',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicMenuImageSplatRoute = ApiPublicMenuImageSplatRouteImport.update({
   id: '/api/public/menu-image/$',
   path: '/api/public/menu-image/$',
@@ -157,6 +163,7 @@ export interface FileRoutesByFullPath {
   '/admin/offers': typeof AdminOffersRoute
   '/admin/order': typeof AdminOrderRoute
   '/admin/patner': typeof AdminPatnerRoute
+  '/track/$code': typeof TrackCodeRoute
   '/admin/': typeof AdminIndexRoute
   '/api/public/menu-image/$': typeof ApiPublicMenuImageSplatRoute
 }
@@ -179,6 +186,7 @@ export interface FileRoutesByTo {
   '/admin/offers': typeof AdminOffersRoute
   '/admin/order': typeof AdminOrderRoute
   '/admin/patner': typeof AdminPatnerRoute
+  '/track/$code': typeof TrackCodeRoute
   '/admin': typeof AdminIndexRoute
   '/api/public/menu-image/$': typeof ApiPublicMenuImageSplatRoute
 }
@@ -203,6 +211,7 @@ export interface FileRoutesById {
   '/admin/offers': typeof AdminOffersRoute
   '/admin/order': typeof AdminOrderRoute
   '/admin/patner': typeof AdminPatnerRoute
+  '/track/$code': typeof TrackCodeRoute
   '/admin/': typeof AdminIndexRoute
   '/api/public/menu-image/$': typeof ApiPublicMenuImageSplatRoute
 }
@@ -228,6 +237,7 @@ export interface FileRouteTypes {
     | '/admin/offers'
     | '/admin/order'
     | '/admin/patner'
+    | '/track/$code'
     | '/admin/'
     | '/api/public/menu-image/$'
   fileRoutesByTo: FileRoutesByTo
@@ -250,6 +260,7 @@ export interface FileRouteTypes {
     | '/admin/offers'
     | '/admin/order'
     | '/admin/patner'
+    | '/track/$code'
     | '/admin'
     | '/api/public/menu-image/$'
   id:
@@ -273,6 +284,7 @@ export interface FileRouteTypes {
     | '/admin/offers'
     | '/admin/order'
     | '/admin/patner'
+    | '/track/$code'
     | '/admin/'
     | '/api/public/menu-image/$'
   fileRoutesById: FileRoutesById
@@ -293,6 +305,7 @@ export interface RootRouteChildren {
   OrdersRoute: typeof OrdersRoute
   SignupRoute: typeof SignupRoute
   WishlistRoute: typeof WishlistRoute
+  TrackCodeRoute: typeof TrackCodeRoute
   ApiPublicMenuImageSplatRoute: typeof ApiPublicMenuImageSplatRoute
 }
 
@@ -438,6 +451,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPatnerRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/track/$code': {
+      id: '/track/$code'
+      path: '/track/$code'
+      fullPath: '/track/$code'
+      preLoaderRoute: typeof TrackCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/menu-image/$': {
       id: '/api/public/menu-image/$'
       path: '/api/public/menu-image/$'
@@ -482,6 +502,7 @@ const rootRouteChildren: RootRouteChildren = {
   OrdersRoute: OrdersRoute,
   SignupRoute: SignupRoute,
   WishlistRoute: WishlistRoute,
+  TrackCodeRoute: TrackCodeRoute,
   ApiPublicMenuImageSplatRoute: ApiPublicMenuImageSplatRoute,
 }
 export const routeTree = rootRouteImport
