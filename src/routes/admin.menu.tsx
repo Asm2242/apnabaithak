@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { ImageDropzone } from "@/components/ImageDropzone";
 import { rupees } from "@/lib/shop";
 
 type Category = { id: string; name: string };
@@ -126,8 +127,21 @@ function AdminMenu() {
 
   const remove = async (id: string) => {
     if (!window.confirm("Delete this dish permanently?")) return;
-    const { error } = await supabase.from("menu_items").delete().eq("id", id);
-    setMsg(error ? error.message : "Deleted.");
+    setBusy(true);
+    setMsg("");
+    const { data, error } = await supabase
+      .from("menu_items")
+      .delete()
+      .eq("id", id)
+      .select("id");
+    setBusy(false);
+    if (error) {
+      setMsg(error.message);
+    } else if (!data || data.length === 0) {
+      setMsg("Could not delete this dish — your account may not have admin permission.");
+    } else {
+      setMsg("Deleted.");
+    }
     await load();
   };
 
@@ -280,22 +294,19 @@ function AdminMenu() {
               />
             </label>
 
-            <label className="mt-4 block">
-              <span className="label">Photo (path or link)</span>
+            <div className="mt-4">
+              <span className="label">Photo</span>
+              <ImageDropzone
+                value={editing.image}
+                onChange={(url) => setEditing((cur) => (cur ? { ...cur, image: url } : cur))}
+              />
               <input
-                className="input"
-                placeholder="/images/foods/thali.jpg"
+                className="input mt-3"
+                placeholder="or paste a path: /images/foods/thali.jpg"
                 value={editing.image}
                 onChange={(e) => setEditing({ ...editing, image: e.target.value })}
               />
-            </label>
-            {editing.image && (
-              <img
-                src={editing.image}
-                alt=""
-                className="mt-3 h-32 w-full rounded-2xl object-cover"
-              />
-            )}
+            </div>
 
             <div className="mt-4 grid grid-cols-3 gap-3">
               <label className="block">

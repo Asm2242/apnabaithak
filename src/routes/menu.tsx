@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
-import { CATEGORIES, MENU_ITEMS } from "@/data/menu";
 import { FoodCard } from "@/components/FoodCard";
 import { PageHero } from "@/components/PageHero";
+import { useLiveMenu } from "@/lib/menu-db";
 
 type MenuSearch = { category?: string | undefined };
 
@@ -13,7 +13,7 @@ export const Route = createFileRoute("/menu")({
   }),
   head: () => ({
     meta: [
-      { title: "Full Menu — 90 Pure Veg Dishes | Apna Baithak Lucknow" },
+      { title: "Full Menu — Pure Veg Dishes | Apna Baithak Lucknow" },
       {
         name: "description",
         content:
@@ -22,8 +22,10 @@ export const Route = createFileRoute("/menu")({
       { property: "og:title", content: "Full Menu — Apna Baithak" },
       {
         property: "og:description",
-        content: "90 pure vegetarian dishes across 10 categories, freshly cooked to order.",
+        content: "Pure vegetarian dishes across every category, freshly cooked to order.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: MenuPage,
@@ -32,14 +34,16 @@ export const Route = createFileRoute("/menu")({
 function MenuPage() {
   const { category } = Route.useSearch();
   const navigate = Route.useNavigate();
+  const { categories, items: all, loading } = useLiveMenu();
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<"popular" | "low" | "high" | "rating">("popular");
   const [bestOnly, setBestOnly] = useState(false);
 
   const active = category ?? "all";
+  const source = all ?? [];
 
   const items = useMemo(() => {
-    let list = MENU_ITEMS.filter((i) => (active === "all" ? true : i.categoryId === active));
+    let list = source.filter((i) => (active === "all" ? true : i.categoryId === active));
     if (bestOnly) list = list.filter((i) => i.bestSeller);
     const q = query.trim().toLowerCase();
     if (q) {
@@ -56,7 +60,7 @@ function MenuPage() {
     if (sort === "rating") sorted.sort((a, b) => b.rating - a.rating);
     if (sort === "popular") sorted.sort((a, b) => Number(b.bestSeller) - Number(a.bestSeller));
     return sorted;
-  }, [active, bestOnly, query, sort]);
+  }, [source, active, bestOnly, query, sort]);
 
   const setCategory = (id: string) =>
     navigate({ search: id === "all" ? {} : { category: id }, resetScroll: false });
@@ -66,7 +70,7 @@ function MenuPage() {
       <PageHero
         eyebrow="Pure Veg Kitchen"
         title="Our Full Menu"
-        subtitle={`${MENU_ITEMS.length} dishes across ${CATEGORIES.length} categories — thali, chaap, momos, Chinese, combos and more.`}
+        subtitle={`${source.length} dishes across ${categories.length} categories — thali, chaap, momos, Chinese, combos and more.`}
       />
 
       <div className="sticky top-[72px] z-30 border-b border-border bg-background/95 backdrop-blur">
@@ -109,16 +113,16 @@ function MenuPage() {
             <CatChip
               label="All"
               icon="🍴"
-              count={MENU_ITEMS.length}
+              count={source.length}
               active={active === "all"}
               onClick={() => setCategory("all")}
             />
-            {CATEGORIES.map((c) => (
+            {categories.map((c) => (
               <CatChip
                 key={c.id}
                 label={c.name}
                 icon={c.icon}
-                count={MENU_ITEMS.filter((i) => i.categoryId === c.id).length}
+                count={source.filter((i) => i.categoryId === c.id).length}
                 active={active === c.id}
                 onClick={() => setCategory(c.id)}
               />
@@ -128,22 +132,28 @@ function MenuPage() {
       </div>
 
       <section className="mx-auto max-w-[1400px] px-5 py-10">
-        <p className="mb-6 text-sm text-muted-foreground">
-          Showing <strong className="text-foreground">{items.length}</strong> dishes
-        </p>
-        {items.length === 0 ? (
-          <div className="rounded-3xl border border-border bg-card p-14 text-center">
-            <p className="font-display text-xl font-bold">No dishes matched that search</p>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Try a different keyword or pick another category.
-            </p>
-          </div>
+        {loading ? (
+          <p className="text-sm text-muted-foreground">Loading the kitchen menu…</p>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {items.map((i) => (
-              <FoodCard key={i.id} item={i} />
-            ))}
-          </div>
+          <>
+            <p className="mb-6 text-sm text-muted-foreground">
+              Showing <strong className="text-foreground">{items.length}</strong> dishes
+            </p>
+            {items.length === 0 ? (
+              <div className="rounded-3xl border border-border bg-card p-14 text-center">
+                <p className="font-display text-xl font-bold">No dishes matched that search</p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Try a different keyword or pick another category.
+                </p>
+              </div>
+            ) : (
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {items.map((i) => (
+                  <FoodCard key={i.id} item={i} />
+                ))}
+              </div>
+            )}
+          </>
         )}
       </section>
     </>
