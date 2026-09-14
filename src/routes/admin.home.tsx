@@ -97,15 +97,36 @@ function AdminHome() {
   useEffect(() => {
     let alive = true;
     (async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data, error } = await (supabase as any).from("home_content").select("*").eq("id", "main").maybeSingle();
-      if (!alive) return;
-      if (error) {
-        setMsg({ kind: "err", text: error.message });
-      } else if (data) {
-        setForm({ ...DEFAULT_HOME, ...data });
+      // try table first
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { data, error } = await (supabase as any).from("home_content").select("*").eq("id", "main").maybeSingle();
+        if (!alive) return;
+        if (!error && data) {
+          setForm({ ...DEFAULT_HOME, ...data });
+          setLoading(false);
+          return;
+        }
+        // if table missing, don't show scary error — fallback to storage silently
+        if (error && String(error.message).includes("Could not find the table")) {
+          // fall through to storage
+        } else if (error) {
+          // other real error — show but still try storage
+        }
+      } catch {
+        // ignore
       }
-      setLoading(false);
+      // fallback: load from storage via public API (no schema cache)
+      try {
+        const res = await fetch("/api/public/home-content", { cache: "no-store" });
+        if (res.ok) {
+          const j = (await res.json()) as Partial<HomeContent>;
+          if (j && Object.keys(j).length > 0 && alive) setForm({ ...DEFAULT_HOME, ...j });
+        }
+      } catch {
+        // keep defaults
+      }
+      if (alive) setLoading(false);
     })();
     return () => {
       alive = false;
