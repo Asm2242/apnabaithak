@@ -143,29 +143,38 @@ function AdminHome() {
     void _id;
     const payload = { ...rest, updated_at: new Date().toISOString() };
 
-    // save via server (service_role, bypasses RLS + schema cache)
+    // 1) try server (service_role) — fastest if env present
+    let serverOk = false;
     try {
       const res = await fetch("/api/admin/home-content", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const j = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
-      if (!res.ok) throw new Error(j.error || `Save failed (${res.status})`);
+      const j = (await res.json().catch(() => ({}))) as { ok?: boolean; fallback?: boolean; error?: string };
+      if (res.ok && j.ok) {
+        serverOk = true;
+      } else if (j.fallback) {
+        serverOk = false; // fall through to direct save
+      } else if (!res.ok) {
+        throw new Error(j.error || `Save failed (${res.status})`);
+      }
+    } catch (e) {
+      // if server missing or 404 (not yet deployed), fallback to direct
+      const m = e instanceof Error ? e.message : String(e);
+      if (m.includes("404") || m.includes("fallback") || m.includes("Failed to fetch")) serverOk = false;
+      else if (!m.includes("Missing Supabase")) {
+        // real server error — show but still try fallback
+        serverOk = false;
+      }
+    }
+    if (serverOk) {
       setSaving(false);
       setMsg({ kind: "ok", text: "Saved! Homepage ab live hai — hard refresh (Ctrl+Shift+R) karo." });
       return;
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : String(e);
-      // fallback: try direct table/storage (old path) if server fails
-      if (!msg.includes("404")) {
-        setSaving(false);
-        setMsg({ kind: "err", text: msg });
-        return;
-      }
     }
 
-    // fallback: direct Supabase (if server route not yet deployed)
+    // 2) direct save via client (anon + RLS) — works when service_role env missing
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let tableOk = false;
     try {
@@ -227,6 +236,7 @@ function AdminHome() {
 
     setSaving(false);
     if (tableOk) setMsg({ kind: "ok", text: "Saved! Homepage ab live hai — hard refresh (Ctrl+Shift+R) karo." });
+    else setMsg({ kind: "err", text: "Save failed — Supabase table/storage not reachable. Check admin role." });
   };
 
   if (loading) return <main className="mx-auto max-w-[900px] px-5 py-10 text-sm text-muted-foreground">Loading…</main>;
