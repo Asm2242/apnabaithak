@@ -68,6 +68,6 @@ create policy "home_content public read"
 
 drop policy if exists "home_content admin write" on public.home_content;
 create policy "home_content admin write"
-  on public.home_content for all
-  using (public.has_role(auth.uid(), 'admin'))
-  with check (public.has_role(auth.uid(), 'admin'));
+  on public.home_content for all to authenticated
+  using (public.has_role(auth.uid(), 'admin'::public.app_role))
+  with check (public.has_role(auth.uid(), 'admin'::public.app_role));
