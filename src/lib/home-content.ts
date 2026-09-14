@@ -1,5 +1,5 @@
-// Home page editable content — lives in Supabase `home_content` (single row id='main').
-// Falls back to static defaults so site never breaks if table is missing.
+// Home page editable content — single row id='main' in Supabase `home_content`.
+// Falls back to DEFAULT_HOME so site never breaks. Same pattern as menu-db.
 
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -87,62 +87,34 @@ export const DEFAULT_HOME: HomeContent = {
   visit_img4: "",
 };
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-const db = () => (supabase as any).from("home_content");
-/* eslint-enable @typescript-eslint/no-explicit-any */
-
+// same live pattern as menu-db
 export function useHomeContent() {
   const [content, setContent] = useState<HomeContent>(DEFAULT_HOME);
   const [loading, setLoading] = useState(true);
-  const [tableMissing, setTableMissing] = useState(false);
 
   const load = useCallback(async () => {
-    try {
-      const { data, error } = await db().select("*").eq("id", "main").maybeSingle();
-      if (error) {
-        if (error.message.includes("home_content") || error.message.includes("schema cache")) {
-          setTableMissing(true);
-        }
-        setLoading(false);
-        return;
-      }
-      if (data) {
-        setContent({ ...DEFAULT_HOME, ...data });
-        setTableMissing(false);
-      }
-    } catch {
-      setTableMissing(true);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase as any)
+      .from("home_content")
+      .select("*")
+      .eq("id", "main")
+      .maybeSingle();
+    if (!error && data) {
+      setContent((prev) => ({ ...prev, ...data }));
     }
     setLoading(false);
   }, []);
 
   useEffect(() => {
     void load();
-    let channel: { unsubscribe?: () => void } | undefined;
-    try {
-      const ch = supabase
-        .channel("home-content")
-        .on("postgres_changes", { event: "*", schema: "public", table: "home_content" }, () =>
-          void load(),
-        )
-        .subscribe();
-      channel = ch as unknown as { unsubscribe?: () => void };
-    } catch {
-      channel = undefined;
-    }
+    const channel = supabase
+      .channel("home-live")
+      .on("postgres_changes", { event: "*", schema: "public", table: "home_content" }, () => void load())
+      .subscribe();
     return () => {
-      try {
-        if (channel?.unsubscribe) channel.unsubscribe();
-      } catch {
-        /* noop */
-      }
-      try {
-        void supabase.removeChannel(channel as never);
-      } catch {
-        /* noop */
-      }
+      void supabase.removeChannel(channel);
     };
   }, [load]);
 
-  return { content, loading, tableMissing, reload: load };
+  return { content, loading, reload: load };
 }

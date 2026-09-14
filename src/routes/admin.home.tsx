@@ -9,33 +9,16 @@ export const Route = createFileRoute("/admin/home")({
     meta: [
       { title: "Home Page Editor | Apna Baithak Admin" },
       { name: "robots", content: "noindex" },
-      { name: "description", content: "Edit homepage hero text, buttons, info strip and sections." },
     ],
   }),
   component: AdminHome,
 });
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-const db = () => (supabase as any).from("home_content");
-/* eslint-enable @typescript-eslint/no-explicit-any */
-
 const SECTIONS: { title: string; fields: (keyof HomeContent)[] }[] = [
-  {
-    title: "Hero — sabse upar bada text",
-    fields: ["hero_badge", "hero_title1", "hero_title2", "hero_description"],
-  },
-  {
-    title: "Buttons + Contact",
-    fields: ["order_now_label", "whatsapp_label", "call_label", "phone", "phone_display", "whatsapp"],
-  },
-  {
-    title: "Address / Time / Rating",
-    fields: ["area", "address", "hours", "days", "rating", "free_delivery_at"],
-  },
-  {
-    title: "Info strip — chhota patti",
-    fields: ["open_text", "nearby_text", "dinein_text"],
-  },
+  { title: "Hero — sabse upar bada text", fields: ["hero_badge", "hero_title1", "hero_title2", "hero_description"] },
+  { title: "Buttons + Contact", fields: ["order_now_label", "whatsapp_label", "call_label", "phone", "phone_display", "whatsapp"] },
+  { title: "Address / Time / Rating", fields: ["area", "address", "hours", "days", "rating", "free_delivery_at"] },
+  { title: "Info strip — chhota patti", fields: ["open_text", "nearby_text", "dinein_text"] },
   {
     title: "Sections — neeche wale headings",
     fields: [
@@ -54,33 +37,33 @@ const SECTIONS: { title: string; fields: (keyof HomeContent)[] }[] = [
 ];
 
 const LABELS: Record<keyof HomeContent, string> = {
-  hero_badge: "Top badge (100% Pure Vegetarian)",
+  hero_badge: "Top badge",
   hero_title1: "Bada heading line 1 (Ghar jaisa)",
   hero_title2: "Bada heading line 2 (swaad, roz taaza)",
-  hero_description: "Hero description (lamba text)",
+  hero_description: "Hero description",
   order_now_label: "Order button text",
   whatsapp_label: "WhatsApp button text",
-  call_label: "Call button prefix (Call)",
-  phone: "Phone (tel: link, digits only)",
+  call_label: "Call prefix",
+  phone: "Phone digits",
   phone_display: "Phone display (+91 ...)",
-  whatsapp: "WhatsApp number (91...)",
-  area: "Area (Eldeco City, Lucknow)",
+  whatsapp: "WhatsApp number",
+  area: "Area",
   address: "Full address",
-  hours: "Hours (7:30 AM – 10:00 PM)",
-  days: "Days (All Days)",
-  rating: "Rating (4.6)",
+  hours: "Hours",
+  days: "Days",
+  rating: "Rating",
   free_delivery_at: "Free delivery over ₹",
-  open_text: "Hours sub-text (Open all days)",
-  nearby_text: "Delivery sub-text (Nearby areas)",
-  dinein_text: "Area sub-text (Dine-in & takeaway)",
+  open_text: "Hours sub-text",
+  nearby_text: "Delivery sub-text",
+  dinein_text: "Area sub-text",
   craving_title: "Craving heading",
-  craving_subtitle: "Craving sub-heading",
+  craving_subtitle: "Craving sub",
   offers_title: "Offers heading",
-  offers_subtitle: "Offers sub-heading",
+  offers_subtitle: "Offers sub",
   combos_title: "Combos heading",
-  combos_subtitle: "Combos sub-heading",
+  combos_subtitle: "Combos sub",
   best_title: "Best sellers heading",
-  best_subtitle: "Best sellers sub-heading",
+  best_subtitle: "Best sellers sub",
   visit_title: "Visit heading",
   visit_desc: "Visit description",
   hero_img1: "Hero photo 1",
@@ -94,13 +77,12 @@ const LABELS: Record<keyof HomeContent, string> = {
 };
 
 const LONG: (keyof HomeContent)[] = ["hero_description", "address", "visit_desc"];
-
 const IMAGE_FIELDS: { key: keyof HomeContent; label: string }[] = [
   { key: "hero_img1", label: "Hero photo 1 (upar right)" },
   { key: "hero_img2", label: "Hero photo 2" },
   { key: "hero_img3", label: "Hero photo 3" },
   { key: "hero_img4", label: "Hero photo 4" },
-  { key: "visit_img1", label: "Visit photo 1 (neeche restaurant)" },
+  { key: "visit_img1", label: "Visit photo 1 (neeche)" },
   { key: "visit_img2", label: "Visit photo 2" },
   { key: "visit_img3", label: "Visit photo 3" },
   { key: "visit_img4", label: "Visit photo 4" },
@@ -110,104 +92,84 @@ function AdminHome() {
   const [form, setForm] = useState<HomeContent>(DEFAULT_HOME);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [msg, setMsg] = useState("");
-  const [missing, setMissing] = useState(false);
+  const [msg, setMsg] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
 
   useEffect(() => {
+    let alive = true;
     (async () => {
-      const { data, error } = await db().select("*").eq("id", "main").maybeSingle();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data, error } = await (supabase as any).from("home_content").select("*").eq("id", "main").maybeSingle();
+      if (!alive) return;
       if (error) {
-        if (error.message.includes("home_content") || error.message.includes("schema cache")) {
-          setMissing(true);
-          setMsg("Table 'home_content' abhi bani nahi hai — neeche SQL chala do, phir save karo.");
-        } else {
-          setMsg(error.message);
-        }
+        setMsg({ kind: "err", text: error.message });
       } else if (data) {
         setForm({ ...DEFAULT_HOME, ...data });
       }
       setLoading(false);
     })();
+    return () => {
+      alive = false;
+    };
   }, []);
 
   const set = (k: keyof HomeContent, v: string) =>
-    setForm((f) => ({
-      ...f,
-      [k]:
-        k === "rating" || k === "free_delivery_at"
-          ? v === "" ? 0 : Number(v)
-          : v,
-    }));
+    setForm((f) => ({ ...f, [k]: k === "rating" || k === "free_delivery_at" ? (v === "" ? 0 : Number(v)) : v }));
 
   const save = async () => {
     setSaving(true);
-    setMsg("");
-    const payload = { id: "main", ...form, updated_at: new Date().toISOString() };
-    const { error } = await db().upsert(payload, { onConflict: "id" });
-    setSaving(false);
-    if (error) {
-      if (error.message.includes("home_content") || error.message.includes("schema cache")) {
-        setMissing(true);
-        setMsg("Table 'home_content' nahi mili. Pehle Supabase me SQL chalao (supabase/home_content.sql).");
-      } else {
-        setMsg(error.message);
-      }
+    setMsg(null);
+    // send all fields except id, like admin/menu does for menu_items
+    const { id: _id, ...rest } = form as HomeContent & { id?: string };
+    void _id;
+    const payload = { ...rest, updated_at: new Date().toISOString() };
+    // try update first, then insert if missing — same as menu editor pattern (reliable)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error: upErr, data: upData } = await (supabase as any)
+      .from("home_content")
+      .update(payload)
+      .eq("id", "main")
+      .select("id");
+    if (upErr) {
+      setSaving(false);
+      setMsg({ kind: "err", text: upErr.message });
       return;
     }
-    setMissing(false);
-    setMsg("Saved! Homepage abhi live update ho gaya.");
+    if (!upData || upData.length === 0) {
+      // row did not exist — insert
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { error: insErr } = await (supabase as any).from("home_content").insert({ id: "main", ...payload });
+      setSaving(false);
+      if (insErr) {
+        setMsg({ kind: "err", text: insErr.message });
+        return;
+      }
+    } else {
+      setSaving(false);
+    }
+    setMsg({ kind: "ok", text: "Saved! Homepage ab live hai — refresh karo." });
   };
 
-  if (loading) {
-    return (
-      <main className="mx-auto max-w-[900px] px-5 py-10">
-        <p className="text-sm text-muted-foreground">Loading home content…</p>
-      </main>
-    );
-  }
+  if (loading) return <main className="mx-auto max-w-[900px] px-5 py-10 text-sm text-muted-foreground">Loading…</main>;
 
   return (
     <main className="mx-auto max-w-[900px] px-5 py-10">
-      <h1 className="font-display text-3xl font-bold">Home page editor</h1>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Upar ka bada text, buttons, phone, address, timing aur neeche ke sections — sab yaha se
-        badlo. Save karte hi website par live.
-      </p>
-
+      <h1 className="font-display text-3xl font-bold">Home editor</h1>
+      <p className="mt-1 text-sm text-muted-foreground">Menu ki tarah — change karo, Save dabao, homepage turant update.</p>
       {msg && (
-        <p className="mt-4 rounded-xl bg-muted p-3 text-sm font-semibold text-foreground">{msg}</p>
-      )}
-
-      {missing && (
-        <div className="mt-4 rounded-2xl border border-destructive/30 bg-destructive/5 p-5 text-sm">
-          <p className="font-bold">Ek baar ka setup bacha hai (2 min):</p>
-          <ol className="mt-2 list-decimal space-y-1 pl-5 text-muted-foreground">
-            <li>Supabase Dashboard kholo → SQL Editor → New query</li>
-            <li>
-              Repo me <code className="font-mono">supabase/home_content.sql</code> file kholo, pura
-              copy karke paste karo → Run
-            </li>
-            <li>Wapas aao, page refresh karke Save dabao</li>
-          </ol>
-        </div>
+        <p className={`mt-4 rounded-xl p-3 text-sm font-semibold ${msg.kind === "ok" ? "bg-veg-soft text-veg" : "bg-destructive/10 text-destructive"}`}>
+          {msg.text}
+        </p>
       )}
 
       {SECTIONS.map((s) => (
         <section key={s.title} className="mt-8 rounded-3xl border border-border bg-card p-6">
-          <h2 className="font-display text-xl font-bold">{s.title}</h2>
+          <h2 className="font-display text-lg font-bold">{s.title}</h2>
           <div className="mt-4 grid gap-4">
             {s.fields.map((k) => (
               <label key={k} className="block">
-                <span className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-muted-foreground">
-                  {LABELS[k]}
-                </span>
+                <span className="mb-1 block text-xs font-bold uppercase tracking-wide text-muted-foreground">{LABELS[k]}</span>
                 {LONG.includes(k) ? (
-                  <textarea
-                    rows={3}
-                    className="input"
-                    value={String(form[k] ?? "")}
-                    onChange={(e) => set(k, e.target.value)}
-                  />
+                  <textarea rows={3} className="input" value={String(form[k] ?? "")} onChange={(e) => set(k, e.target.value)} />
                 ) : (
                   <input
                     className="input"
@@ -223,24 +185,16 @@ function AdminHome() {
       ))}
 
       <section className="mt-8 rounded-3xl border border-border bg-card p-6">
-        <h2 className="font-display text-xl font-bold">Photos — drag & drop</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Photo par click karo ya photo kheench ke box me chhodo (drag & drop). Upload hote hi
-          neeche link aa jayega. Save dabana mat bhoolo.
-        </p>
+        <h2 className="font-display text-lg font-bold">Photos — drag & drop</h2>
+        <p className="mt-1 text-sm text-muted-foreground">Box par click karo ya photo kheench ke chhodo, phir Save dabao.</p>
         <div className="mt-4 grid gap-5 md:grid-cols-2">
           {IMAGE_FIELDS.map((f) => (
             <div key={f.key} className="rounded-2xl border border-border p-4">
-              <p className="mb-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">
-                {f.label}
-              </p>
-              <ImageDropzone
-                value={String(form[f.key] ?? "")}
-                onChange={(url) => set(f.key, url)}
-              />
+              <p className="mb-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">{f.label}</p>
+              <ImageDropzone value={String(form[f.key] ?? "")} onChange={(url) => set(f.key, url)} />
               <input
-                className="input mt-3"
-                placeholder="ya link paste karo: /images/foods/thali.jpg"
+                className="input mt-2"
+                placeholder="/images/foods/thali.jpg"
                 value={String(form[f.key] ?? "")}
                 onChange={(e) => set(f.key, e.target.value)}
               />
@@ -256,6 +210,7 @@ function AdminHome() {
       >
         {saving ? "Saving…" : "Save home page"}
       </button>
+      <p className="mt-3 text-center text-xs text-muted-foreground">Save ke baad homepage ko hard refresh karo (Ctrl+Shift+R).</p>
     </main>
   );
 }
