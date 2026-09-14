@@ -222,14 +222,6 @@ function AdminHome() {
         </section>
       ))}
 
-      <button
-        disabled={saving}
-        onClick={() => void save()}
-        className="mt-8 w-full rounded-full bg-primary px-6 py-4 text-sm font-bold text-primary-foreground disabled:opacity-60"
-      >
-        {saving ? "Saving…" : "Save home page"}
-      </button>
-
       <section className="mt-8 rounded-3xl border border-border bg-card p-6">
         <h2 className="font-display text-xl font-bold">Photos — drag & drop</h2>
         <p className="mt-1 text-sm text-muted-foreground">
