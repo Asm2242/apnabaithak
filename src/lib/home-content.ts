@@ -93,14 +93,37 @@ export function useHomeContent() {
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data, error } = await (supabase as any)
-      .from("home_content")
-      .select("*")
-      .eq("id", "main")
-      .maybeSingle();
-    if (!error && data) {
-      setContent((prev) => ({ ...prev, ...data }));
+    // 1) try Supabase table (fast, realtime)
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data, error } = await (supabase as any)
+        .from("home_content")
+        .select("*")
+        .eq("id", "main")
+        .maybeSingle();
+      if (!error && data) {
+        setContent((prev) => ({ ...prev, ...data }));
+        setLoading(false);
+        return;
+      }
+      // if table missing, will fall through to storage fallback
+      if (error && !String(error.message).includes("Could not find the table")) {
+        // real error but not schema cache — still try fallback
+      }
+    } catch {
+      // ignore, try fallback
+    }
+    // 2) fallback: fetch from storage via public API (no schema cache, always works)
+    try {
+      const res = await fetch("/api/public/home-content", { cache: "no-store" });
+      if (res.ok) {
+        const j = (await res.json()) as Partial<HomeContent>;
+        if (j && Object.keys(j).length > 0) {
+          setContent((prev) => ({ ...prev, ...j }));
+        }
+      }
+    } catch {
+      // keep defaults
     }
     setLoading(false);
   }, []);
@@ -111,8 +134,16 @@ export function useHomeContent() {
       .channel("home-live")
       .on("postgres_changes", { event: "*", schema: "public", table: "home_content" }, () => void load())
       .subscribe();
+    // also poll storage every 15s for fallback
+    const iv = window.setInterval(() => void load(), 15000);
+    const onVis = () => {
+      if (document.visibilityState === "visible") void load();
+    };
+    document.addEventListener("visibilitychange", onVis);
     return () => {
       void supabase.removeChannel(channel);
+      window.clearInterval(iv);
+      document.removeEventListener("visibilitychange", onVis);
     };
   }, [load]);
 

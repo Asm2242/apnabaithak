@@ -118,35 +118,74 @@ function AdminHome() {
   const save = async () => {
     setSaving(true);
     setMsg(null);
-    // send all fields except id, like admin/menu does for menu_items
     const { id: _id, ...rest } = form as HomeContent & { id?: string };
     void _id;
     const payload = { ...rest, updated_at: new Date().toISOString() };
-    // try update first, then insert if missing — same as menu editor pattern (reliable)
+
+    // 1) try Supabase table first (menu jaisa)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { error: upErr, data: upData } = await (supabase as any)
-      .from("home_content")
-      .update(payload)
-      .eq("id", "main")
-      .select("id");
-    if (upErr) {
-      setSaving(false);
-      setMsg({ kind: "err", text: upErr.message });
-      return;
-    }
-    if (!upData || upData.length === 0) {
-      // row did not exist — insert
+    let tableOk = false;
+    try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { error: insErr } = await (supabase as any).from("home_content").insert({ id: "main", ...payload });
-      setSaving(false);
-      if (insErr) {
-        setMsg({ kind: "err", text: insErr.message });
+      const { error: upErr, data: upData } = await (supabase as any)
+        .from("home_content")
+        .update(payload)
+        .eq("id", "main")
+        .select("id");
+      if (!upErr) {
+        if (!upData || upData.length === 0) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const { error: insErr } = await (supabase as any).from("home_content").insert({ id: "main", ...payload });
+          if (!insErr) tableOk = true;
+          else if (String(insErr.message).includes("Could not find the table")) tableOk = false;
+          else {
+            setSaving(false);
+            setMsg({ kind: "err", text: insErr.message });
+            return;
+          }
+        } else {
+          tableOk = true;
+        }
+      } else if (String(upErr.message).includes("Could not find the table")) {
+        tableOk = false;
+      } else {
+        setSaving(false);
+        setMsg({ kind: "err", text: upErr.message });
         return;
       }
-    } else {
-      setSaving(false);
+    } catch (e) {
+      const m = e instanceof Error ? e.message : String(e);
+      if (m.includes("Could not find the table")) tableOk = false;
     }
-    setMsg({ kind: "ok", text: "Saved! Homepage ab live hai — refresh karo." });
+
+    // 2) always also save to storage (bypasses schema cache, guarantees read via public API)
+    try {
+      const blob = new Blob([JSON.stringify({ id: "main", ...payload })], { type: "application/json" });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { error: upErr2 } = await (supabase as any).storage.from("menu").upload("home_content.json", blob, {
+        upsert: true,
+        contentType: "application/json",
+      });
+      if (upErr2 && !String(upErr2.message).includes("Could not find")) {
+        // if storage fails but table succeeded, still ok
+        if (!tableOk) {
+          setSaving(false);
+          setMsg({ kind: "err", text: upErr2.message });
+          return;
+        }
+      } else {
+        tableOk = true;
+      }
+    } catch (e) {
+      if (!tableOk) {
+        setSaving(false);
+        setMsg({ kind: "err", text: e instanceof Error ? e.message : String(e) });
+        return;
+      }
+    }
+
+    setSaving(false);
+    if (tableOk) setMsg({ kind: "ok", text: "Saved! Homepage ab live hai — hard refresh (Ctrl+Shift+R) karo." });
   };
 
   if (loading) return <main className="mx-auto max-w-[900px] px-5 py-10 text-sm text-muted-foreground">Loading…</main>;
