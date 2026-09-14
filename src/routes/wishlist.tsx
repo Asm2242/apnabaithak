@@ -2,7 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Heart } from "lucide-react";
 import { FoodCard } from "@/components/FoodCard";
 import { PageHero } from "@/components/PageHero";
-import { itemById, useShop } from "@/lib/shop";
+import { useShop } from "@/lib/shop";
+import { useLiveMenu } from "@/lib/menu-db";
+import { MENU_ITEMS as FALLBACK_ITEMS } from "@/data/menu";
 
 export const Route = createFileRoute("/wishlist")({
   head: () => ({
@@ -21,7 +23,10 @@ export const Route = createFileRoute("/wishlist")({
 
 function WishlistPage() {
   const { wishlist, ready } = useShop();
-  const items = wishlist.map(itemById).filter((i) => i != null);
+  const { items: liveItems } = useLiveMenu();
+  const allItems = liveItems ?? FALLBACK_ITEMS;
+  const byId = new Map(allItems.map((i) => [i.id, i]));
+  const items = wishlist.map((id) => byId.get(id)).filter((i) => i != null);
 
   return (
     <>

@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Clock, MapPin, Phone, Star, Truck, Utensils } from "lucide-react";
-import { CATEGORIES, MENU_ITEMS } from "@/data/menu";
+import { CATEGORIES as FALLBACK_CATEGORIES, MENU_ITEMS as FALLBACK_ITEMS } from "@/data/menu";
+import { useLiveMenu } from "@/lib/menu-db";
 import { FREE_DELIVERY_AT, GALLERY, OFFERS, RESTAURANT, waLink } from "@/data/site";
 import { FoodCard, VegDot } from "@/components/FoodCard";
 import { rupees } from "@/lib/shop";
@@ -27,6 +28,9 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
+  const { categories: liveCategories, items: liveItems } = useLiveMenu();
+  const CATEGORIES = liveCategories.length > 0 ? liveCategories : FALLBACK_CATEGORIES;
+  const MENU_ITEMS = liveItems ?? FALLBACK_ITEMS;
   const bestSellers = MENU_ITEMS.filter((i) => i.bestSeller).slice(0, 8);
   const combos = MENU_ITEMS.filter((i) => i.categoryId === "combos");
   const heroShots = GALLERY.filter((g) => g.kind === "Food").slice(0, 4);

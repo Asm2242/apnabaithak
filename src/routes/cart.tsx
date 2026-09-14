@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
-import { MENU_ITEMS } from "@/data/menu";
+import { MENU_ITEMS as FALLBACK_ITEMS } from "@/data/menu";
+import { useLiveMenu } from "@/lib/menu-db";
 import { FREE_DELIVERY_AT } from "@/data/site";
 import { FoodCard } from "@/components/FoodCard";
 import { PageHero } from "@/components/PageHero";
@@ -24,6 +25,8 @@ export const Route = createFileRoute("/cart")({
 function CartPage() {
   const { lines, setQty, remove, clear, subtotal, discount, delivery, total, bestOffer, ready } =
     useShop();
+  const { items: liveItems } = useLiveMenu();
+  const MENU_ITEMS = liveItems ?? FALLBACK_ITEMS;
   const trending = MENU_ITEMS.filter((i) => i.bestSeller).slice(0, 4);
 
   return (

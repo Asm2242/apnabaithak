@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Leaf, Clock, HeartHandshake, ChefHat } from "lucide-react";
-import { CATEGORIES, MENU_ITEMS } from "@/data/menu";
+import { CATEGORIES as FALLBACK_CATEGORIES, MENU_ITEMS as FALLBACK_ITEMS } from "@/data/menu";
+import { useLiveMenu } from "@/lib/menu-db";
 import { GALLERY, RESTAURANT } from "@/data/site";
 import { PageHero } from "@/components/PageHero";
 
@@ -24,6 +25,9 @@ export const Route = createFileRoute("/about")({
 });
 
 function AboutPage() {
+  const { categories: liveCategories, items: liveItems } = useLiveMenu();
+  const CATEGORIES = liveCategories.length > 0 ? liveCategories : FALLBACK_CATEGORIES;
+  const MENU_ITEMS = liveItems ?? FALLBACK_ITEMS;
   return (
     <>
       <PageHero

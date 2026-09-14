@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { CATEGORIES, MENU_ITEMS } from "@/data/menu";
+import { useEffect, useState } from "react";
+import { CATEGORIES as FALLBACK_CATEGORIES, MENU_ITEMS as FALLBACK_ITEMS } from "@/data/menu";
+import { useLiveMenu } from "@/lib/menu-db";
+import { supabase } from "@/integrations/supabase/client";
 import { BULK_ORDERS, OFFERS } from "@/data/site";
 import { rupees } from "@/lib/shop";
 
@@ -9,10 +11,32 @@ export const Route = createFileRoute("/admin/")({
 });
 
 function AdminDashboard() {
-  const [availability, setAvailability] = useState<Record<string, boolean>>({});
+  const { categories: liveCategories, items: liveItems, loading, reload } = useLiveMenu();
+  const CATEGORIES = liveCategories.length > 0 ? liveCategories : FALLBACK_CATEGORIES;
+  const MENU_ITEMS = liveItems ?? FALLBACK_ITEMS;
   const [category, setCategory] = useState(CATEGORIES[0]?.id ?? "thali");
-  const isOn = (id: string, fallback: boolean) => availability[id] ?? fallback;
-  const available = MENU_ITEMS.filter((i) => isOn(i.id, i.available)).length;
+  const [msg, setMsg] = useState("");
+  const [busyId, setBusyId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (CATEGORIES.length > 0 && !CATEGORIES.some((c) => c.id === category)) {
+      setCategory(CATEGORIES[0].id);
+    }
+  }, [CATEGORIES, category]);
+
+  const toggleAvailability = async (id: string, current: boolean) => {
+    setBusyId(id);
+    setMsg("");
+    const { error } = await supabase.from("menu_items").update({ available: !current }).eq("id", id);
+    if (error) {
+      setMsg(error.message);
+    } else {
+      await reload();
+    }
+    setBusyId(null);
+  };
+
+  const available = MENU_ITEMS.filter((i) => i.available).length;
   const pipeline = BULK_ORDERS.reduce((s, b) => s + (b.quoted ?? 0), 0);
   const items = MENU_ITEMS.filter((i) => i.categoryId === category);
 
@@ -40,43 +64,55 @@ function AdminDashboard() {
       <section className="mt-10 rounded-3xl border border-border bg-card p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="font-display text-2xl font-bold">Food menu manager</h2>
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="rounded-full border border-border bg-card px-4 py-2.5 text-sm font-semibold"
-          >
-            {CATEGORIES.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.icon} {c.name}
-              </option>
-            ))}
-          </select>
+          <div className="flex items-center gap-3">
+            <Link
+              to="/admin/menu"
+              className="rounded-full bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground"
+            >
+              Open full menu editor
+            </Link>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="rounded-full border border-border bg-card px-4 py-2.5 text-sm font-semibold"
+            >
+              {CATEGORIES.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.icon} {c.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-        <ul className="mt-6 divide-y divide-border">
-          {items.map((i) => (
-            <li key={i.id} className="flex items-center gap-4 py-3">
-              <img src={i.image} alt="" className="size-12 rounded-xl object-cover" />
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold">{i.name}</p>
-                <p className="truncate text-xs text-muted-foreground">
-                  {rupees(i.price)} • {i.rating}★{i.bestSeller ? " • Bestseller" : ""}
-                </p>
-              </div>
-              <button
-                onClick={() =>
-                  setAvailability((a) => ({ ...a, [i.id]: !isOn(i.id, i.available) }))
-                }
-                className={`rounded-full px-4 py-2 text-xs font-bold ${
-                  isOn(i.id, i.available)
-                    ? "bg-veg-soft text-veg"
-                    : "bg-destructive/10 text-destructive"
-                }`}
-              >
-                {isOn(i.id, i.available) ? "Available" : "Unavailable"}
-              </button>
-            </li>
-          ))}
-        </ul>
+        {msg && (
+          <p className="mt-4 rounded-xl bg-muted p-3 text-sm font-semibold text-foreground">{msg}</p>
+        )}
+        {loading && liveItems === null ? (
+          <p className="mt-6 text-sm text-muted-foreground">Loading live menu…</p>
+        ) : (
+          <ul className="mt-6 divide-y divide-border">
+            {items.map((i) => (
+              <li key={i.id} className="flex items-center gap-4 py-3">
+                <img src={i.image} alt="" className="size-12 rounded-xl object-cover" />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold">{i.name}</p>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {rupees(i.price)} • {i.rating}★{i.bestSeller ? " • Bestseller" : ""}
+                  </p>
+                </div>
+                <button
+                  disabled={busyId === i.id}
+                  onClick={() => void toggleAvailability(i.id, i.available)}
+                  className={`rounded-full px-4 py-2 text-xs font-bold disabled:opacity-60 ${
+                    i.available ? "bg-veg-soft text-veg" : "bg-destructive/10 text-destructive"
+                  }`}
+                >
+                  {busyId === i.id ? "Saving…" : i.available ? "Available" : "Unavailable"}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
 
       <section className="mt-8 rounded-3xl border border-border bg-card p-6">

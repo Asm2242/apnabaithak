@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { MENU_ITEMS } from "@/data/menu";
+import { MENU_ITEMS as FALLBACK_ITEMS } from "@/data/menu";
+import { useLiveMenu } from "@/lib/menu-db";
 import { FoodCard } from "@/components/FoodCard";
 import { PageHero } from "@/components/PageHero";
 import { rupees } from "@/lib/shop";
@@ -24,9 +25,11 @@ export const Route = createFileRoute("/combos")({
 });
 
 function CombosPage() {
+  const { items: liveItems, loading } = useLiveMenu();
+  const MENU_ITEMS = liveItems ?? FALLBACK_ITEMS;
   const combos = MENU_ITEMS.filter((i) => i.categoryId === "combos");
   const thalis = MENU_ITEMS.filter((i) => i.categoryId === "thali");
-  const cheapest = Math.min(...combos.map((c) => c.price));
+  const cheapest = combos.length > 0 ? Math.min(...combos.map((c) => c.price)) : 0;
 
   return (
     <>
@@ -37,6 +40,9 @@ function CombosPage() {
       />
 
       <section className="mx-auto max-w-[1400px] px-5 py-14">
+        {loading && (
+          <p className="mb-4 text-sm text-muted-foreground">Syncing latest menu changes…</p>
+        )}
         <h2 className="font-display text-3xl font-bold">Combo meals</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           Everything portioned and packed together — ideal for lunch at work or dinner at home.
