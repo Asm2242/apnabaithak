@@ -2,7 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Clock, MapPin, Phone, Star, Truck, Utensils } from "lucide-react";
 import { CATEGORIES as FALLBACK_CATEGORIES, MENU_ITEMS as FALLBACK_ITEMS } from "@/data/menu";
 import { useLiveMenu } from "@/lib/menu-db";
-import { FREE_DELIVERY_AT, GALLERY, OFFERS, RESTAURANT, waLink } from "@/data/site";
+import { useHomeContent } from "@/lib/home-content";
+import { GALLERY, OFFERS, RESTAURANT } from "@/data/site";
 import { FoodCard, VegDot } from "@/components/FoodCard";
 import { rupees } from "@/lib/shop";
 
@@ -29,11 +30,14 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const { categories: liveCategories, items: liveItems } = useLiveMenu();
+  const { content: H } = useHomeContent();
   const CATEGORIES = liveCategories.length > 0 ? liveCategories : FALLBACK_CATEGORIES;
   const MENU_ITEMS = liveItems ?? FALLBACK_ITEMS;
   const bestSellers = MENU_ITEMS.filter((i) => i.bestSeller).slice(0, 8);
   const combos = MENU_ITEMS.filter((i) => i.categoryId === "combos");
   const heroShots = GALLERY.filter((g) => g.kind === "Food").slice(0, 4);
+  const waNumber = H.whatsapp || RESTAURANT.whatsapp;
+  const waHref = `https://wa.me/${waNumber}?text=${encodeURIComponent("Hi! I'd like to place an order at Apna Baithak.")}`;
 
   return (
     <>
@@ -41,16 +45,14 @@ function Home() {
         <div className="mx-auto grid max-w-[1400px] items-center gap-12 px-5 py-16 lg:grid-cols-2 lg:py-24">
           <div>
             <span className="inline-flex items-center gap-2 rounded-full border border-ink-foreground/20 bg-ink-foreground/10 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em]">
-              <VegDot /> 100% Pure Vegetarian
+              <VegDot /> {H.hero_badge}
             </span>
             <h1 className="mt-6 font-display text-5xl font-bold leading-[1.05] md:text-7xl">
-              Ghar jaisa
-              <span className="block text-primary">swaad, roz taaza</span>
+              {H.hero_title1}
+              <span className="block text-primary">{H.hero_title2}</span>
             </h1>
             <p className="mt-5 max-w-lg text-base text-ink-foreground/75">
-              Apna Baithak serves freshly cooked thalis, tandoori chaap, momos and Indo-Chinese from
-              our kitchen in {RESTAURANT.area}. Over {MENU_ITEMS.length} dishes, every one of them
-              pure veg.
+              {H.hero_description} Over {MENU_ITEMS.length} dishes, every one of them pure veg.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
@@ -58,21 +60,21 @@ function Home() {
                 to="/menu"
                 className="rounded-full bg-primary px-7 py-3.5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary-glow"
               >
-                Order Now
+                {H.order_now_label}
               </Link>
               <a
-                href={waLink("Hi! I'd like to place an order at Apna Baithak.")}
+                href={waHref}
                 target="_blank"
                 rel="noreferrer"
                 className="rounded-full border border-ink-foreground/25 px-7 py-3.5 text-sm font-bold"
               >
-                WhatsApp Order
+                {H.whatsapp_label}
               </a>
               <a
-                href={`tel:${RESTAURANT.phone}`}
+                href={`tel:${H.phone}`}
                 className="rounded-full border border-ink-foreground/25 px-7 py-3.5 text-sm font-bold"
               >
-                Call {RESTAURANT.phoneDisplay}
+                {H.call_label} {H.phone_display}
               </a>
             </div>
 
@@ -80,7 +82,7 @@ function Home() {
               {[
                 { k: `${MENU_ITEMS.length}+`, v: "Dishes" },
                 { k: `${CATEGORIES.length}`, v: "Categories" },
-                { k: `${RESTAURANT.rating}★`, v: "Rated" },
+                { k: `${H.rating}★`, v: "Rated" },
               ].map((s) => (
                 <div key={s.v} className="rounded-2xl bg-ink-foreground/10 px-4 py-3">
                   <dt className="font-display text-2xl font-bold text-primary">{s.k}</dt>
@@ -107,9 +109,9 @@ function Home() {
         <div className="border-t border-ink-foreground/10">
           <div className="mx-auto grid max-w-[1400px] gap-4 px-5 py-6 sm:grid-cols-3">
             {[
-              { icon: Clock, t: RESTAURANT.hours, s: "Open all days" },
-              { icon: Truck, t: `Free delivery over ${rupees(FREE_DELIVERY_AT)}`, s: "Nearby areas" },
-              { icon: MapPin, t: RESTAURANT.area, s: "Dine-in & takeaway" },
+              { icon: Clock, t: H.hours, s: H.open_text },
+              { icon: Truck, t: `Free delivery over ${rupees(H.free_delivery_at)}`, s: H.nearby_text },
+              { icon: MapPin, t: H.area, s: H.dinein_text },
             ].map((f) => (
               <div key={f.t} className="flex items-center gap-3">
                 <f.icon className="size-5 text-primary" />
@@ -123,7 +125,7 @@ function Home() {
         </div>
       </section>
 
-      <Section title="What are you craving?" subtitle="Ten categories, all pure veg">
+      <Section title={H.craving_title} subtitle={H.craving_subtitle}>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
           {CATEGORIES.map((c) => (
             <Link
@@ -142,7 +144,7 @@ function Home() {
         </div>
       </Section>
 
-      <Section title="Today's offers" subtitle="Save more on bigger orders">
+      <Section title={H.offers_title} subtitle={H.offers_subtitle}>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {OFFERS.slice(0, 4).map((o) => (
             <div
@@ -168,7 +170,7 @@ function Home() {
         </div>
       </Section>
 
-      <Section title="Value combos" subtitle="Full meals for one, family or party">
+      <Section title={H.combos_title} subtitle={H.combos_subtitle}>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {combos.map((c) => (
             <FoodCard key={c.id} item={c} />
@@ -176,7 +178,7 @@ function Home() {
         </div>
       </Section>
 
-      <Section title="Best sellers" subtitle="Most loved by our regulars">
+      <Section title={H.best_title} subtitle={H.best_subtitle}>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {bestSellers.map((i) => (
             <FoodCard key={i.id} item={i} />
@@ -195,27 +197,24 @@ function Home() {
       <section className="mx-auto mt-20 max-w-[1400px] px-5">
         <div className="grid gap-8 rounded-4xl border border-border bg-card p-8 lg:grid-cols-2 lg:p-12">
           <div>
-            <h2 className="font-display text-3xl font-bold">Visit our baithak</h2>
-            <p className="mt-3 text-sm text-muted-foreground">
-              Dine in, pick up, or get it delivered. Our kitchen is fully vegetarian — no eggs, no
-              exceptions.
-            </p>
+            <h2 className="font-display text-3xl font-bold">{H.visit_title}</h2>
+            <p className="mt-3 text-sm text-muted-foreground">{H.visit_desc}</p>
             <ul className="mt-6 space-y-4 text-sm">
               <li className="flex gap-3">
                 <MapPin className="mt-0.5 size-5 shrink-0 text-primary" />
-                {RESTAURANT.address}
+                {H.address}
               </li>
               <li className="flex gap-3">
                 <Clock className="mt-0.5 size-5 shrink-0 text-primary" />
-                {RESTAURANT.hours} • {RESTAURANT.days}
+                {H.hours} • {H.days}
               </li>
               <li className="flex gap-3">
                 <Phone className="mt-0.5 size-5 shrink-0 text-primary" />
-                <a href={`tel:${RESTAURANT.phone}`}>{RESTAURANT.phoneDisplay}</a>
+                <a href={`tel:${H.phone}`}>{H.phone_display}</a>
               </li>
               <li className="flex gap-3">
                 <Star className="mt-0.5 size-5 shrink-0 text-primary" />
-                Rated {RESTAURANT.rating} by Eldeco City diners
+                Rated {H.rating} by Eldeco City diners
               </li>
               <li className="flex gap-3">
                 <Utensils className="mt-0.5 size-5 shrink-0 text-primary" />
