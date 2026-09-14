@@ -61,11 +61,13 @@ alter table public.home_content add column if not exists visit_img4 text not nul
 -- Public can read (homepage). Any logged-in user can write.
 -- (Admin page already checks admin login. Homepage text is low-risk data,
 --  so we keep the policy simple to work on every Supabase project.)
+grant select on public.home_content to anon, authenticated;
+grant all on public.home_content to authenticated, service_role;
 alter table public.home_content enable row level security;
 
 drop policy if exists "home_content public read" on public.home_content;
 create policy "home_content public read"
-  on public.home_content for select
+  on public.home_content for select to anon, authenticated
   using (true);
 
 drop policy if exists "home_content admin write" on public.home_content;
@@ -73,3 +75,12 @@ create policy "home_content admin write"
   on public.home_content for all to authenticated
   using (true)
   with check (true);
+
+-- realtime for live update (menu ki tarah)
+do $$ begin
+  alter publication supabase_realtime add table public.home_content;
+exception when duplicate_object then null;
+end $$;
+
+-- force PostgREST to see new table instantly
+select pg_notify('pgrst', 'reload schema');
