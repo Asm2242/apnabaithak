@@ -143,7 +143,29 @@ function AdminHome() {
     void _id;
     const payload = { ...rest, updated_at: new Date().toISOString() };
 
-    // 1) try Supabase table first (menu jaisa)
+    // save via server (service_role, bypasses RLS + schema cache)
+    try {
+      const res = await fetch("/api/admin/home-content", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const j = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+      if (!res.ok) throw new Error(j.error || `Save failed (${res.status})`);
+      setSaving(false);
+      setMsg({ kind: "ok", text: "Saved! Homepage ab live hai — hard refresh (Ctrl+Shift+R) karo." });
+      return;
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      // fallback: try direct table/storage (old path) if server fails
+      if (!msg.includes("404")) {
+        setSaving(false);
+        setMsg({ kind: "err", text: msg });
+        return;
+      }
+    }
+
+    // fallback: direct Supabase (if server route not yet deployed)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let tableOk = false;
     try {
@@ -179,7 +201,6 @@ function AdminHome() {
       if (m.includes("Could not find the table")) tableOk = false;
     }
 
-    // 2) always also save to storage (bypasses schema cache, guarantees read via public API)
     try {
       const blob = new Blob([JSON.stringify({ id: "main", ...payload })], { type: "application/json" });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -188,7 +209,6 @@ function AdminHome() {
         contentType: "application/json",
       });
       if (upErr2 && !String(upErr2.message).includes("Could not find")) {
-        // if storage fails but table succeeded, still ok
         if (!tableOk) {
           setSaving(false);
           setMsg({ kind: "err", text: upErr2.message });
