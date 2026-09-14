@@ -35,6 +35,14 @@ export type HomeContent = {
   best_subtitle: string;
   visit_title: string;
   visit_desc: string;
+  hero_img1: string;
+  hero_img2: string;
+  hero_img3: string;
+  hero_img4: string;
+  visit_img1: string;
+  visit_img2: string;
+  visit_img3: string;
+  visit_img4: string;
 };
 
 export const DEFAULT_HOME: HomeContent = {
@@ -69,6 +77,14 @@ export const DEFAULT_HOME: HomeContent = {
   visit_title: "Visit our baithak",
   visit_desc:
     "Dine in, pick up, or get it delivered. Our kitchen is fully vegetarian — no eggs, no exceptions.",
+  hero_img1: "/images/foods/special-thali.jpg",
+  hero_img2: "/images/foods/steam-momos-6-pc.jpg",
+  hero_img3: "/images/foods/mini-combo.jpg",
+  hero_img4: "/images/foods/jeera-rice.jpg",
+  visit_img1: "",
+  visit_img2: "",
+  visit_img3: "",
+  visit_img4: "",
 };
 
 /* eslint-disable @typescript-eslint/no-explicit-any */

@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { ImageDropzone } from "@/components/ImageDropzone";
 import { DEFAULT_HOME, type HomeContent } from "@/lib/home-content";
 
 export const Route = createFileRoute("/admin/home")({
@@ -82,9 +83,28 @@ const LABELS: Record<keyof HomeContent, string> = {
   best_subtitle: "Best sellers sub-heading",
   visit_title: "Visit heading",
   visit_desc: "Visit description",
+  hero_img1: "Hero photo 1",
+  hero_img2: "Hero photo 2",
+  hero_img3: "Hero photo 3",
+  hero_img4: "Hero photo 4",
+  visit_img1: "Visit photo 1",
+  visit_img2: "Visit photo 2",
+  visit_img3: "Visit photo 3",
+  visit_img4: "Visit photo 4",
 };
 
 const LONG: (keyof HomeContent)[] = ["hero_description", "address", "visit_desc"];
+
+const IMAGE_FIELDS: { key: keyof HomeContent; label: string }[] = [
+  { key: "hero_img1", label: "Hero photo 1 (upar right)" },
+  { key: "hero_img2", label: "Hero photo 2" },
+  { key: "hero_img3", label: "Hero photo 3" },
+  { key: "hero_img4", label: "Hero photo 4" },
+  { key: "visit_img1", label: "Visit photo 1 (neeche restaurant)" },
+  { key: "visit_img2", label: "Visit photo 2" },
+  { key: "visit_img3", label: "Visit photo 3" },
+  { key: "visit_img4", label: "Visit photo 4" },
+];
 
 function AdminHome() {
   const [form, setForm] = useState<HomeContent>(DEFAULT_HOME);
@@ -201,6 +221,41 @@ function AdminHome() {
           </div>
         </section>
       ))}
+
+      <button
+        disabled={saving}
+        onClick={() => void save()}
+        className="mt-8 w-full rounded-full bg-primary px-6 py-4 text-sm font-bold text-primary-foreground disabled:opacity-60"
+      >
+        {saving ? "Saving…" : "Save home page"}
+      </button>
+
+      <section className="mt-8 rounded-3xl border border-border bg-card p-6">
+        <h2 className="font-display text-xl font-bold">Photos — drag & drop</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Photo par click karo ya photo kheench ke box me chhodo (drag & drop). Upload hote hi
+          neeche link aa jayega. Save dabana mat bhoolo.
+        </p>
+        <div className="mt-4 grid gap-5 md:grid-cols-2">
+          {IMAGE_FIELDS.map((f) => (
+            <div key={f.key} className="rounded-2xl border border-border p-4">
+              <p className="mb-2 text-xs font-bold uppercase tracking-wide text-muted-foreground">
+                {f.label}
+              </p>
+              <ImageDropzone
+                value={String(form[f.key] ?? "")}
+                onChange={(url) => set(f.key, url)}
+              />
+              <input
+                className="input mt-3"
+                placeholder="ya link paste karo: /images/foods/thali.jpg"
+                value={String(form[f.key] ?? "")}
+                onChange={(e) => set(f.key, e.target.value)}
+              />
+            </div>
+          ))}
+        </div>
+      </section>
 
       <button
         disabled={saving}

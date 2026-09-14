@@ -35,7 +35,16 @@ function Home() {
   const MENU_ITEMS = liveItems ?? FALLBACK_ITEMS;
   const bestSellers = MENU_ITEMS.filter((i) => i.bestSeller).slice(0, 8);
   const combos = MENU_ITEMS.filter((i) => i.categoryId === "combos");
-  const heroShots = GALLERY.filter((g) => g.kind === "Food").slice(0, 4);
+  const heroShots = [H.hero_img1, H.hero_img2, H.hero_img3, H.hero_img4].filter((s) => s.trim() !== "");
+  const fallbackHero = GALLERY.filter((g) => g.kind === "Food").slice(0, 4);
+  const heroPics = heroShots.length > 0 ? heroShots : fallbackHero.map((g) => g.src);
+  const visitPics = [H.visit_img1, H.visit_img2, H.visit_img3, H.visit_img4].filter(
+    (s) => s.trim() !== "",
+  );
+  const fallbackVisit = GALLERY.filter((g) => g.kind === "Restaurant")
+    .slice(0, 4)
+    .map((g) => g.src);
+  const visitShots = visitPics.length > 0 ? visitPics : fallbackVisit;
   const waNumber = H.whatsapp || RESTAURANT.whatsapp;
   const waHref = `https://wa.me/${waNumber}?text=${encodeURIComponent("Hi! I'd like to place an order at Apna Baithak.")}`;
 
@@ -93,11 +102,11 @@ function Home() {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            {heroShots.map((g, i) => (
+            {heroPics.map((src, i) => (
               <img
-                key={g.src}
-                src={g.src}
-                alt={g.caption}
+                key={src + i}
+                src={src}
+                alt="Apna Baithak food"
                 className={`h-44 w-full rounded-3xl border border-ink-foreground/10 object-cover md:h-60 ${
                   i % 2 === 1 ? "translate-y-6" : ""
                 }`}
@@ -239,17 +248,15 @@ function Home() {
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            {GALLERY.filter((g) => g.kind === "Restaurant")
-              .slice(0, 4)
-              .map((g) => (
-                <img
-                  key={g.src}
-                  src={g.src}
-                  alt={g.caption}
-                  loading="lazy"
-                  className="h-40 w-full rounded-2xl object-cover md:h-52"
-                />
-              ))}
+            {visitShots.map((src, i) => (
+              <img
+                key={src + i}
+                src={src}
+                alt="Apna Baithak restaurant"
+                loading="lazy"
+                className="h-40 w-full rounded-2xl object-cover md:h-52"
+              />
+            ))}
           </div>
         </div>
       </section>

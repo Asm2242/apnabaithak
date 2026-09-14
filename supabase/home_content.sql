@@ -33,12 +33,30 @@ create table if not exists public.home_content (
   best_subtitle text not null default 'Most loved by our regulars',
   visit_title text not null default 'Visit our baithak',
   visit_desc text not null default 'Dine in, pick up, or get it delivered. Our kitchen is fully vegetarian — no eggs, no exceptions.',
+  hero_img1 text not null default '/images/foods/special-thali.jpg',
+  hero_img2 text not null default '/images/foods/steam-momos-6-pc.jpg',
+  hero_img3 text not null default '/images/foods/mini-combo.jpg',
+  hero_img4 text not null default '/images/foods/jeera-rice.jpg',
+  visit_img1 text not null default '',
+  visit_img2 text not null default '',
+  visit_img3 text not null default '',
+  visit_img4 text not null default '',
   updated_at timestamptz not null default now()
 );
 
 insert into public.home_content (id)
 values ('main')
 on conflict (id) do nothing;
+
+-- Image columns for old tables (agar pehle SQL chala diya tha to ye add karega):
+alter table public.home_content add column if not exists hero_img1 text not null default '/images/foods/special-thali.jpg';
+alter table public.home_content add column if not exists hero_img2 text not null default '/images/foods/steam-momos-6-pc.jpg';
+alter table public.home_content add column if not exists hero_img3 text not null default '/images/foods/mini-combo.jpg';
+alter table public.home_content add column if not exists hero_img4 text not null default '/images/foods/jeera-rice.jpg';
+alter table public.home_content add column if not exists visit_img1 text not null default '';
+alter table public.home_content add column if not exists visit_img2 text not null default '';
+alter table public.home_content add column if not exists visit_img3 text not null default '';
+alter table public.home_content add column if not exists visit_img4 text not null default '';
 
 -- Public can read (homepage), only admins can write.
 alter table public.home_content enable row level security;
