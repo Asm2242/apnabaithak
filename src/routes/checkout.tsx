@@ -1,10 +1,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PageHero } from "@/components/PageHero";
+import { PhoneOtp } from "@/components/PhoneOtp";
 import { rupees, useShop } from "@/lib/shop";
 import { useAuth } from "@/lib/auth";
 import {
   confirmOnlinePayment,
+  markOnlinePaymentFailed,
   placeOnlineOrder,
   placeOrder,
   type PlaceOrderInput,
@@ -47,6 +49,7 @@ function CheckoutPage() {
   const { user, profile, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [placed, setPlaced] = useState<string | null>(null);
+  const [placedCod, setPlacedCod] = useState(false);
   const [paidNote, setPaidNote] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -56,16 +59,30 @@ function CheckoutPage() {
     address: "",
     landmark: "",
     mode: "delivery" as "delivery" | "takeaway",
-    payment: "online" as "cod" | "upi" | "online",
+    payment: "online" as "cod" | "online",
     notes: "",
+    phoneVerified: false,
   });
 
   const set = (k: keyof typeof form) => (e: { target: { value: string } }) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
 
+  // Profile loads async — fill name/phone once it arrives (don't overwrite typing).
+  useEffect(() => {
+    setForm((f) => ({
+      ...f,
+      name: f.name || profile?.full_name || "",
+      phone: f.phone || profile?.phone || "",
+    }));
+  }, [profile?.full_name, profile?.phone]);
+
   const buildInput = (): PlaceOrderInput | null => {
-    if (!/^\d{10}$/.test(form.phone)) {
-      setError("Enter a valid 10-digit phone number.");
+    if (!/^[6-9]\d{9}$/.test(form.phone)) {
+      setError("Enter a valid 10-digit Indian mobile number.");
+      return null;
+    }
+    if (!form.phoneVerified) {
+      setError("Please verify your mobile number with OTP before placing the order.");
       return null;
     }
     if (form.mode === "delivery" && form.address.trim().length < 10) {
@@ -81,7 +98,8 @@ function CheckoutPage() {
       landmark: form.landmark,
       notes: form.notes,
       mode: form.mode,
-      payment_method: form.payment === "online" ? "razorpay" : form.payment,
+      payment_method: form.payment === "online" ? "razorpay" : "cod",
+      phone_verified: form.phoneVerified,
     };
   };
 
@@ -130,16 +148,24 @@ function CheckoutPage() {
         });
 
         if (!result.ok) {
-          setError(result.error ?? "Payment failed. Your order is saved — you can pay on delivery.");
+          setError(result.error ?? "Payment failed. Your order is saved — retry payment or pay on delivery.");
+          try {
+            await markOnlinePaymentFailed({ data: { order_id: created.id } });
+          } catch {
+            /* order stays pending for retry from /orders */
+          }
           setBusy(false);
           return;
         }
         setPaidNote(true);
+        setPlacedCod(false);
         clear();
         setPlaced(created.order_code);
       } else {
         const created = await placeOrder({ data: input });
         clear();
+        setPaidNote(false);
+        setPlacedCod(true);
         setPlaced(created.order_code);
       }
     } catch (err) {
@@ -159,7 +185,9 @@ function CheckoutPage() {
             <p className="mt-4 text-sm text-muted-foreground">
               {paidNote
                 ? "Payment received. We'll start cooking right away."
-                : `We'll call ${form.phone} to confirm. Typical prep time is 25–35 minutes.`}
+                : placedCod
+                  ? "Pay cash when your order is delivered. We'll call you to confirm."
+                  : `We'll call ${form.phone} to confirm. Typical prep time is 25–35 minutes.`}
             </p>
             <div className="mt-7 flex flex-wrap justify-center gap-3">
               <Link
@@ -238,11 +266,26 @@ function CheckoutPage() {
                 <input
                   required
                   value={form.phone}
-                  onChange={set("phone")}
+                  onChange={(e) => {
+                    set("phone")(e);
+                    setForm((f) => ({ ...f, phoneVerified: false }));
+                  }}
                   className="input"
                   placeholder="10-digit number"
                 />
               </Field>
+            </div>
+
+            <div className="mt-4">
+              <PhoneOtp
+                phone={form.phone}
+                onVerified={() => setForm((f) => ({ ...f, phoneVerified: true }))}
+              />
+              {form.phoneVerified && (
+                <p className="mt-2 text-xs font-semibold text-veg">
+                  OTP verification status: verified ✓
+                </p>
+              )}
             </div>
 
             {form.mode === "delivery" && (
@@ -267,16 +310,15 @@ function CheckoutPage() {
             </Field>
 
             <h2 className="mt-8 font-display text-xl font-bold">Payment</h2>
-            <div className="mt-4 grid gap-3 sm:grid-cols-3">
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
               {[
-                { id: "online", t: "Pay online", d: "UPI, card, netbanking — pay now" },
-                { id: "cod", t: "Cash on delivery", d: "Pay when it arrives" },
-                { id: "upi", t: "UPI on delivery", d: "Scan and pay at the door" },
+                { id: "online", t: "Online Payment", d: "UPI, card, netbanking — pay now" },
+                { id: "cod", t: "Cash on Delivery", d: "Pay cash when your order is delivered" },
               ].map((p) => (
                 <button
                   key={p.id}
                   type="button"
-                  onClick={() => setForm((f) => ({ ...f, payment: p.id as "cod" | "upi" | "online" }))}
+                  onClick={() => setForm((f) => ({ ...f, payment: p.id as "cod" | "online" }))}
                   className={`rounded-2xl border p-4 text-left ${
                     form.payment === p.id ? "border-primary bg-primary/5" : "border-border"
                   }`}

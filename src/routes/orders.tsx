@@ -123,7 +123,15 @@ function OrdersPage() {
                       <p className="text-xs text-muted-foreground">
                         {new Date(o.created_at).toLocaleString("en-IN")} • {o.mode} •{" "}
                         {o.payment_method.toUpperCase()} —{" "}
-                        {o.payment_status === "paid" ? "Paid" : "Payment pending"}
+                        {o.payment_status === "paid"
+                          ? "Paid"
+                          : o.payment_status === "cod"
+                            ? "Pay cash on delivery"
+                            : o.payment_status === "failed"
+                              ? "Payment failed — retry available"
+                              : o.payment_status === "refunded"
+                                ? "Refunded"
+                                : "Payment pending"}
                       </p>
                     </div>
                     <span className={`rounded-full px-3 py-1 text-xs font-bold ${STATUS_TONE[status]}`}>

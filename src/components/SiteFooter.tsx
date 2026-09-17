@@ -19,8 +19,8 @@ export function SiteFooter() {
             </div>
           </div>
           <p className="mt-4 max-w-xs text-sm text-ink-foreground/70">
-            100% pure vegetarian kitchen in Eldeco City, Lucknow. Freshly cooked thalis, chaap,
-            momos, Chinese and combos — served hot every single day.
+            100% pure vegetarian kitchen in Eldeco City, Lucknow. Freshly cooked thalis, maggi,
+            pizza, momos, Chinese and combos — served hot every single day.
           </p>
         </div>
 
@@ -72,7 +72,11 @@ export function SiteFooter() {
             </li>
             <li className="flex gap-3">
               <Phone className="mt-0.5 size-4 shrink-0 text-primary" />
-              <a href={`tel:${RESTAURANT.phone}`}>{RESTAURANT.phoneDisplay}</a>
+              <span>
+                <a href={`tel:${RESTAURANT.phone}`}>{RESTAURANT.phoneDisplay}</a>
+                <br />
+                <a href={`tel:${RESTAURANT.phone2}`}>{RESTAURANT.phone2Display}</a>
+              </span>
             </li>
             <li className="flex gap-3">
               <Clock className="mt-0.5 size-4 shrink-0 text-primary" />
@@ -93,8 +97,8 @@ export function SiteFooter() {
       </div>
 
       <div className="border-t border-ink-foreground/10 px-5 py-5 text-center text-xs text-ink-foreground/55">
-        © {new Date().getFullYear()} Apna Baithak Pure Vegetarian Restaurant, Eldeco City, Lucknow.
-        All rights reserved.
+        © {new Date().getFullYear()} {RESTAURANT.name}, Eldeco City, Lucknow. Owner:{" "}
+        {RESTAURANT.owner}. {RESTAURANT.tagline}. All rights reserved.
       </div>
     </footer>
   );

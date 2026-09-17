@@ -2,15 +2,21 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { createHmac, timingSafeEqual } from "crypto";
 
+export type Portion = "Half" | "Full" | "Small" | "Regular";
+
+export type PaymentMethod = "cod" | "razorpay";
+export type PaymentStatus = "pending" | "paid" | "cod" | "failed" | "refunded";
+
 export type PlaceOrderInput = {
-  items: { item_id: string; portion: "Half" | "Full" | "Regular"; qty: number }[];
+  items: { item_id: string; portion: Portion; qty: number }[];
   customer_name: string;
   phone: string;
   address: string;
   landmark: string;
   notes: string;
   mode: "delivery" | "takeaway";
-  payment_method: "cod" | "upi" | "razorpay";
+  payment_method: PaymentMethod;
+  phone_verified?: boolean;
 };
 
 const FREE_DELIVERY_AT = 399;
@@ -19,10 +25,24 @@ const DELIVERY_FEE = 39;
 function validate(input: PlaceOrderInput): PlaceOrderInput {
   if (!Array.isArray(input.items) || input.items.length === 0) throw new Error("Cart is empty.");
   if (input.items.length > 50) throw new Error("Too many items in one order.");
-  if (!/^\d{10}$/.test(input.phone)) throw new Error("Enter a valid 10-digit phone number.");
+  // Indian 10-digit mobile number (server-side, never trust frontend).
+  if (!/^[6-9]\d{9}$/.test(input.phone))
+    throw new Error("Enter a valid 10-digit Indian mobile number.");
   if (input.customer_name.trim().length < 2) throw new Error("Enter your name.");
+  if (input.customer_name.trim().length > 100) throw new Error("Name is too long.");
   if (input.mode === "delivery" && input.address.trim().length < 10)
     throw new Error("Please give a full delivery address.");
+  if (input.address.length > 500) throw new Error("Address is too long.");
+  if (input.landmark.length > 200) throw new Error("Landmark is too long.");
+  if (input.notes.length > 500) throw new Error("Order notes are too long.");
+  if (input.payment_method !== "cod" && input.payment_method !== "razorpay")
+    throw new Error("Choose a valid payment method.");
+  for (const line of input.items) {
+    if (!["Half", "Full", "Small", "Regular"].includes(line.portion))
+      throw new Error("Invalid portion selected.");
+    if (!Number.isInteger(line.qty) || line.qty < 1 || line.qty > 50)
+      throw new Error("Invalid quantity.");
+  }
   return input;
 }
 
@@ -35,7 +55,7 @@ async function priceCart(supabase: SupabaseLike, data: PlaceOrderInput) {
   const ids = [...new Set(data.items.map((i) => i.item_id))];
   const { data: dishes, error: dishErr } = await supabase
     .from("menu_items")
-    .select("id,name,price,half_price,full_price,available")
+    .select("id,name,price,half_price,full_price,available,category_id")
     .in("id", ids);
   if (dishErr) throw new Error(dishErr.message);
 
@@ -45,10 +65,14 @@ async function priceCart(supabase: SupabaseLike, data: PlaceOrderInput) {
     if (!dish) throw new Error(`A dish in your cart is no longer on the menu.`);
     if (!dish.available) throw new Error(`${dish.name} is sold out right now.`);
     const qty = Math.max(1, Math.min(50, Math.round(line.qty)));
+    // Server is authoritative: Half/Full from half_price/full_price columns.
+    // Pizza Small/Regular are stored in the same columns — never trust frontend price.
+    // Regular for pizza = full_price (Regular size); Regular otherwise = single price.
+    const isPizza = (dish as any).category_id === "pizza";
     const price =
-      line.portion === "Half"
+      line.portion === "Half" || line.portion === "Small"
         ? Number(dish.half_price ?? Math.round(Number(dish.price) / 2))
-        : line.portion === "Full"
+        : line.portion === "Full" || (line.portion === "Regular" && isPizza)
           ? Number(dish.full_price ?? dish.price)
           : Number(dish.price);
     subtotal += price * qty;
@@ -103,6 +127,9 @@ async function insertOrder(
   const priced = await priceCart(supabase, data);
   const orderCode = newOrderCode();
 
+  // COD orders are marked COD/PENDING at creation — never open Razorpay for them.
+  const initialPaymentStatus = data.payment_method === "cod" ? "cod" : "pending";
+
   const { data: order, error: orderErr } = await supabase
     .from("orders")
     .insert({
@@ -115,7 +142,7 @@ async function insertOrder(
       notes: data.notes.trim(),
       mode: data.mode,
       payment_method: data.payment_method,
-      payment_status: "pending",
+      payment_status: initialPaymentStatus,
       status: "pending",
       subtotal: priced.subtotal,
       discount: priced.discount,
@@ -197,6 +224,35 @@ export const placeOnlineOrder = createServerFn({ method: "POST" })
     };
   });
 
+// Marks an online order as FAILED after a cancelled/failed Razorpay attempt.
+// Keeps cart/order safe so the customer can retry from /orders.
+export const markOnlinePaymentFailed = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { order_id: string }) => {
+    if (!input.order_id) throw new Error("Missing order.");
+    return input;
+  })
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { data: order } = await supabase
+      .from("orders")
+      .select("id,customer_id,payment_status,payment_method")
+      .eq("id", data.order_id)
+      .single();
+    if (!order || order.customer_id !== userId) throw new Error("Order not found.");
+    if (order.payment_method !== "razorpay" || order.payment_status === "paid")
+      return { ok: true };
+    await supabase.from("orders").update({ payment_status: "failed" }).eq("id", order.id);
+    await supabase.from("order_status_history").insert({
+      order_id: order.id,
+      status: "pending",
+      changed_by: userId,
+      changed_by_name: "Online payment",
+      note: "Online payment failed or was cancelled — awaiting retry",
+    });
+    return { ok: true };
+  });
+
 // Verifies the Razorpay signature after checkout, then marks the order paid.
 export const confirmOnlinePayment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -209,7 +265,8 @@ export const confirmOnlinePayment = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    const keySecret = process.env["RAZORPAY_KEY_SECRET"]!;
+    const keySecret = process.env["RAZORPAY_KEY_SECRET"];
+    if (!keySecret) throw new Error("Online payment is not configured yet.");
 
     const { data: order } = await supabase
       .from("orders")

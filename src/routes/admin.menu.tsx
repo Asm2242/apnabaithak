@@ -310,7 +310,9 @@ function AdminMenu() {
 
             <div className="mt-4 grid grid-cols-3 gap-3">
               <label className="block">
-                <span className="label">Price ₹</span>
+                <span className="label">
+                  {editing.category_id === "pizza" ? "Small ₹ (base)" : "Price ₹"}
+                </span>
                 <input
                   type="number"
                   className="input"
@@ -319,7 +321,9 @@ function AdminMenu() {
                 />
               </label>
               <label className="block">
-                <span className="label">Half ₹</span>
+                <span className="label">
+                  {editing.category_id === "pizza" ? "Small ₹" : "Half ₹"}
+                </span>
                 <input
                   type="number"
                   className="input"
@@ -333,7 +337,9 @@ function AdminMenu() {
                 />
               </label>
               <label className="block">
-                <span className="label">Full ₹</span>
+                <span className="label">
+                  {editing.category_id === "pizza" ? "Regular ₹" : "Full ₹"}
+                </span>
                 <input
                   type="number"
                   className="input"

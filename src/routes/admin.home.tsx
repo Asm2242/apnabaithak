@@ -146,9 +146,14 @@ function AdminHome() {
     // 1) try server (service_role) — fastest if env present
     let serverOk = false;
     try {
+      const { data: sess } = await supabase.auth.getSession();
+      const token = sess.session?.access_token;
       const res = await fetch("/api/admin/home-content", {
         method: "POST",
-        headers: { "content-type": "application/json" },
+        headers: {
+          "content-type": "application/json",
+          ...(token ? { authorization: `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify(payload),
       });
       const j = (await res.json().catch(() => ({}))) as { ok?: boolean; fallback?: boolean; error?: string };

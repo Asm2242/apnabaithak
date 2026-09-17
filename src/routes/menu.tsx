@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { FoodCard } from "@/components/FoodCard";
 import { PageHero } from "@/components/PageHero";
+import { MENU_ITEMS as FALLBACK_ITEMS } from "@/data/menu";
 import { useLiveMenu } from "@/lib/menu-db";
 
 type MenuSearch = { category?: string | undefined };
@@ -17,7 +18,7 @@ export const Route = createFileRoute("/menu")({
       {
         name: "description",
         content:
-          "Browse the complete Apna Baithak menu: thali, roasted chaap, momos, Chinese, main course, burgers, beverages and combos. All 100% vegetarian.",
+          "Browse the complete Apna Baithak menu: thali, maggi, pizza, Chinese, momos, dal-sabzi, paratha-roti, burgers and combos. All 100% vegetarian.",
       },
       { property: "og:title", content: "Full Menu — Apna Baithak" },
       {
@@ -40,7 +41,7 @@ function MenuPage() {
   const [bestOnly, setBestOnly] = useState(false);
 
   const active = category ?? "all";
-  const source = all ?? [];
+  const source = all ?? FALLBACK_ITEMS;
 
   const items = useMemo(() => {
     let list = source.filter((i) => (active === "all" ? true : i.categoryId === active));
@@ -70,7 +71,7 @@ function MenuPage() {
       <PageHero
         eyebrow="Pure Veg Kitchen"
         title="Our Full Menu"
-        subtitle={`${source.length} dishes across ${categories.length} categories — thali, chaap, momos, Chinese, combos and more.`}
+        subtitle={`${source.length} dishes across ${categories.length} categories — thali, maggi, pizza, Chinese, momos, combos and more.`}
       />
 
       <div className="sticky top-[72px] z-30 border-b border-border bg-background/95 backdrop-blur">
@@ -81,7 +82,7 @@ function MenuPage() {
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search dishes, e.g. malai chaap, momos, noodles"
+                placeholder="Search dishes, e.g. chilli paneer, momos, noodles"
                 className="w-full rounded-full border border-border bg-card py-3 pl-11 pr-4 text-sm outline-none focus:border-primary"
               />
             </label>

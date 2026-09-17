@@ -20,10 +20,27 @@ type Order = {
   address: string;
   mode: string;
   payment_method: string;
+  payment_status: string;
   status: string;
   total: number;
   created_at: string;
   delivery_partner_id: string | null;
+};
+
+const PAYMENT_LABEL: Record<string, string> = {
+  pending: "Payment pending",
+  paid: "Paid online",
+  cod: "COD",
+  failed: "Payment failed",
+  refunded: "Refunded",
+};
+
+const PAYMENT_TONE: Record<string, string> = {
+  pending: "bg-muted text-foreground",
+  paid: "bg-veg-soft text-veg",
+  cod: "bg-primary/10 text-primary",
+  failed: "bg-destructive/10 text-destructive",
+  refunded: "bg-destructive/10 text-destructive",
 };
 
 type Item = { id: string; order_id: string; name: string; portion: string; qty: number; price: number };
@@ -57,6 +74,7 @@ function AdminOrders() {
   const [history, setHistory] = useState<History[]>([]);
   const [partners, setPartners] = useState<Partner[]>([]);
   const [filter, setFilter] = useState<"all" | OrderStatus>("all");
+  const [payFilter, setPayFilter] = useState<"all" | "cod" | "online" | "failed">("all");
   const [open, setOpen] = useState<string | null>(null);
   const [msg, setMsg] = useState("");
 
@@ -65,7 +83,7 @@ function AdminOrders() {
       supabase
         .from("orders")
         .select(
-          "id,order_code,customer_name,phone,address,mode,payment_method,status,total,created_at,delivery_partner_id",
+          "id,order_code,customer_name,phone,address,mode,payment_method,payment_status,status,total,created_at,delivery_partner_id",
         )
         .order("created_at", { ascending: false })
         .limit(200),
@@ -147,8 +165,17 @@ function AdminOrders() {
   };
 
   const shown = useMemo(
-    () => (orders ?? []).filter((o) => filter === "all" || o.status === filter),
-    [orders, filter],
+    () =>
+      (orders ?? []).filter(
+        (o) =>
+          (filter === "all" || o.status === filter) &&
+          (payFilter === "all" ||
+            (payFilter === "cod" && o.payment_status === "cod") ||
+            (payFilter === "online" && o.payment_status === "paid") ||
+            (payFilter === "failed" &&
+              (o.payment_status === "failed" || o.payment_status === "pending"))),
+      ),
+    [orders, filter, payFilter],
   );
 
   return (
@@ -174,6 +201,27 @@ function AdminOrders() {
             }`}
           >
             {s === "all" ? "All" : STATUS_LABEL[s as OrderStatus]}
+          </button>
+        ))}
+      </div>
+
+      <div className="mt-3 flex flex-wrap gap-2">
+        {(
+          [
+            ["all", "All payments"],
+            ["cod", "COD"],
+            ["online", "Online-paid"],
+            ["failed", "Unpaid / failed"],
+          ] as const
+        ).map(([v, label]) => (
+          <button
+            key={v}
+            onClick={() => setPayFilter(v)}
+            className={`rounded-full border px-4 py-2 text-sm font-semibold ${
+              payFilter === v ? "border-ink bg-ink text-ink-foreground" : "border-border bg-card"
+            }`}
+          >
+            {label}
           </button>
         ))}
       </div>
@@ -212,6 +260,13 @@ function AdminOrders() {
                     <span className={`rounded-full px-3 py-1 text-xs font-bold ${STATUS_TONE[status]}`}>
                       {STATUS_LABEL[status]}
                     </span>
+                    <p className="mt-2">
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs font-bold ${PAYMENT_TONE[o.payment_status] ?? PAYMENT_TONE.pending}`}
+                      >
+                        {PAYMENT_LABEL[o.payment_status] ?? o.payment_status}
+                      </span>
+                    </p>
                     <p className="mt-2 font-display text-xl font-bold text-primary">
                       {rupees(Number(o.total))}
                     </p>

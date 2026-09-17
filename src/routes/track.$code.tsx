@@ -51,6 +51,11 @@ function TrackPage() {
   const [loc, setLoc] = useState<Loc | null>(null);
 
   const load = useCallback(async () => {
+    // Require login — order codes are guessable, don't leak to anonymous callers.
+    if (!user) {
+      setOrder("missing");
+      return;
+    }
     const { data: o } = await supabase
       .from("orders")
       .select(
@@ -79,7 +84,7 @@ function TrackPage() {
     setItems((it ?? []) as Item[]);
     setLog((h ?? []) as History[]);
     setLoc((l ?? null) as Loc | null);
-  }, [code]);
+  }, [code, user?.id]);
 
   useEffect(() => {
     if (authLoading) return;
@@ -152,7 +157,15 @@ function TrackPage() {
             </span>
             <span className="text-sm text-muted-foreground">
               {order.payment_method.toUpperCase()} •{" "}
-              {order.payment_status === "paid" ? "Paid" : "Payment pending"}
+              {order.payment_status === "paid"
+                ? "Paid"
+                : order.payment_status === "cod"
+                  ? "Pay cash on delivery"
+                  : order.payment_status === "failed"
+                    ? "Payment failed"
+                    : order.payment_status === "refunded"
+                      ? "Refunded"
+                      : "Payment pending"}
             </span>
           </div>
 

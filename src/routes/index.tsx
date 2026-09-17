@@ -14,12 +14,12 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Order pure vegetarian thali, chaap, momos, Chinese and combos from Apna Baithak, Eldeco City Lucknow. Open 7:30 AM to 10 PM, all days.",
+          "Order pure vegetarian thali, maggi, pizza, momos, Chinese and combos from Apna Baithak, Eldeco City Lucknow. Open 7:30 AM to 10 PM, all days.",
       },
       { property: "og:title", content: "Apna Baithak — Pure Veg Restaurant, Lucknow" },
       {
         property: "og:description",
-        content: "90+ freshly cooked pure veg dishes. Thali, chaap, momos, Chinese and combos.",
+        content: "81 freshly cooked pure veg dishes. Thali, maggi, pizza, momos, Chinese and combos.",
       },
       { property: "og:image", content: `${RESTAURANT.logo}` },
       { name: "twitter:image", content: `${RESTAURANT.logo}` },

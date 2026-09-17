@@ -67,11 +67,16 @@ function SignupPage() {
               return;
             }
             setBusy(true);
-            const res = await signUp(form);
-            setBusy(false);
-            if (!res.ok) setError(res.error ?? "Could not create account.");
-            else if (res.needsConfirm) setSent(true);
-            else navigate({ to: "/account" });
+            try {
+              const res = await signUp(form);
+              if (!res.ok) setError(res.error ?? "Could not create account.");
+              else if (res.needsConfirm) setSent(true);
+              else navigate({ to: "/account" });
+            } catch {
+              setError("Could not create account. Check your connection and try again.");
+            } finally {
+              setBusy(false);
+            }
           }}
           className="rounded-3xl border border-border bg-card p-7"
         >

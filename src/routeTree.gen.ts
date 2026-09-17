@@ -25,11 +25,14 @@ import { Route as OrdersRouteImport } from './routes/orders'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as WishlistRouteImport } from './routes/wishlist'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminHomeRouteImport } from './routes/admin.home'
 import { Route as AdminMenuRouteImport } from './routes/admin.menu'
 import { Route as AdminOffersRouteImport } from './routes/admin.offers'
 import { Route as AdminOrderRouteImport } from './routes/admin.order'
 import { Route as AdminPatnerRouteImport } from './routes/admin.patner'
 import { Route as TrackCodeRouteImport } from './routes/track.$code'
+import { Route as ApiAdminHomeContentRouteImport } from './routes/api/admin/home-content'
+import { Route as ApiPublicHomeContentRouteImport } from './routes/api/public/home-content'
 import { Route as ApiPublicMenuImageSplatRouteImport } from './routes/api/public/menu-image.$'
 
 const IndexRoute = IndexRouteImport.update({
@@ -112,6 +115,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminHomeRoute = AdminHomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminMenuRoute = AdminMenuRouteImport.update({
   id: '/menu',
   path: '/menu',
@@ -137,6 +145,16 @@ const TrackCodeRoute = TrackCodeRouteImport.update({
   path: '/track/$code',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAdminHomeContentRoute = ApiAdminHomeContentRouteImport.update({
+  id: '/api/admin/home-content',
+  path: '/api/admin/home-content',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicHomeContentRoute = ApiPublicHomeContentRouteImport.update({
+  id: '/api/public/home-content',
+  path: '/api/public/home-content',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicMenuImageSplatRoute = ApiPublicMenuImageSplatRouteImport.update({
   id: '/api/public/menu-image/$',
   path: '/api/public/menu-image/$',
@@ -159,12 +177,15 @@ export interface FileRoutesByFullPath {
   '/orders': typeof OrdersRoute
   '/signup': typeof SignupRoute
   '/wishlist': typeof WishlistRoute
+  '/admin/home': typeof AdminHomeRoute
   '/admin/menu': typeof AdminMenuRoute
   '/admin/offers': typeof AdminOffersRoute
   '/admin/order': typeof AdminOrderRoute
   '/admin/patner': typeof AdminPatnerRoute
   '/track/$code': typeof TrackCodeRoute
   '/admin/': typeof AdminIndexRoute
+  '/api/admin/home-content': typeof ApiAdminHomeContentRoute
+  '/api/public/home-content': typeof ApiPublicHomeContentRoute
   '/api/public/menu-image/$': typeof ApiPublicMenuImageSplatRoute
 }
 export interface FileRoutesByTo {
@@ -182,12 +203,15 @@ export interface FileRoutesByTo {
   '/orders': typeof OrdersRoute
   '/signup': typeof SignupRoute
   '/wishlist': typeof WishlistRoute
+  '/admin/home': typeof AdminHomeRoute
   '/admin/menu': typeof AdminMenuRoute
   '/admin/offers': typeof AdminOffersRoute
   '/admin/order': typeof AdminOrderRoute
   '/admin/patner': typeof AdminPatnerRoute
   '/track/$code': typeof TrackCodeRoute
   '/admin': typeof AdminIndexRoute
+  '/api/admin/home-content': typeof ApiAdminHomeContentRoute
+  '/api/public/home-content': typeof ApiPublicHomeContentRoute
   '/api/public/menu-image/$': typeof ApiPublicMenuImageSplatRoute
 }
 export interface FileRoutesById {
@@ -207,12 +231,15 @@ export interface FileRoutesById {
   '/orders': typeof OrdersRoute
   '/signup': typeof SignupRoute
   '/wishlist': typeof WishlistRoute
+  '/admin/home': typeof AdminHomeRoute
   '/admin/menu': typeof AdminMenuRoute
   '/admin/offers': typeof AdminOffersRoute
   '/admin/order': typeof AdminOrderRoute
   '/admin/patner': typeof AdminPatnerRoute
   '/track/$code': typeof TrackCodeRoute
   '/admin/': typeof AdminIndexRoute
+  '/api/admin/home-content': typeof ApiAdminHomeContentRoute
+  '/api/public/home-content': typeof ApiPublicHomeContentRoute
   '/api/public/menu-image/$': typeof ApiPublicMenuImageSplatRoute
 }
 export interface FileRouteTypes {
@@ -233,12 +260,15 @@ export interface FileRouteTypes {
     | '/orders'
     | '/signup'
     | '/wishlist'
+    | '/admin/home'
     | '/admin/menu'
     | '/admin/offers'
     | '/admin/order'
     | '/admin/patner'
     | '/track/$code'
     | '/admin/'
+    | '/api/admin/home-content'
+    | '/api/public/home-content'
     | '/api/public/menu-image/$'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -256,12 +286,15 @@ export interface FileRouteTypes {
     | '/orders'
     | '/signup'
     | '/wishlist'
+    | '/admin/home'
     | '/admin/menu'
     | '/admin/offers'
     | '/admin/order'
     | '/admin/patner'
     | '/track/$code'
     | '/admin'
+    | '/api/admin/home-content'
+    | '/api/public/home-content'
     | '/api/public/menu-image/$'
   id:
     | '__root__'
@@ -280,12 +313,15 @@ export interface FileRouteTypes {
     | '/orders'
     | '/signup'
     | '/wishlist'
+    | '/admin/home'
     | '/admin/menu'
     | '/admin/offers'
     | '/admin/order'
     | '/admin/patner'
     | '/track/$code'
     | '/admin/'
+    | '/api/admin/home-content'
+    | '/api/public/home-content'
     | '/api/public/menu-image/$'
   fileRoutesById: FileRoutesById
 }
@@ -306,6 +342,8 @@ export interface RootRouteChildren {
   SignupRoute: typeof SignupRoute
   WishlistRoute: typeof WishlistRoute
   TrackCodeRoute: typeof TrackCodeRoute
+  ApiAdminHomeContentRoute: typeof ApiAdminHomeContentRoute
+  ApiPublicHomeContentRoute: typeof ApiPublicHomeContentRoute
   ApiPublicMenuImageSplatRoute: typeof ApiPublicMenuImageSplatRoute
 }
 
@@ -423,6 +461,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/home': {
+      id: '/admin/home'
+      path: '/home'
+      fullPath: '/admin/home'
+      preLoaderRoute: typeof AdminHomeRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/menu': {
       id: '/admin/menu'
       path: '/menu'
@@ -458,6 +503,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrackCodeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/admin/home-content': {
+      id: '/api/admin/home-content'
+      path: '/api/admin/home-content'
+      fullPath: '/api/admin/home-content'
+      preLoaderRoute: typeof ApiAdminHomeContentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/home-content': {
+      id: '/api/public/home-content'
+      path: '/api/public/home-content'
+      fullPath: '/api/public/home-content'
+      preLoaderRoute: typeof ApiPublicHomeContentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/menu-image/$': {
       id: '/api/public/menu-image/$'
       path: '/api/public/menu-image/$'
@@ -469,6 +528,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminHomeRoute: typeof AdminHomeRoute
   AdminMenuRoute: typeof AdminMenuRoute
   AdminOffersRoute: typeof AdminOffersRoute
   AdminOrderRoute: typeof AdminOrderRoute
@@ -477,6 +537,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminHomeRoute: AdminHomeRoute,
   AdminMenuRoute: AdminMenuRoute,
   AdminOffersRoute: AdminOffersRoute,
   AdminOrderRoute: AdminOrderRoute,
@@ -503,6 +564,8 @@ const rootRouteChildren: RootRouteChildren = {
   SignupRoute: SignupRoute,
   WishlistRoute: WishlistRoute,
   TrackCodeRoute: TrackCodeRoute,
+  ApiAdminHomeContentRoute: ApiAdminHomeContentRoute,
+  ApiPublicHomeContentRoute: ApiPublicHomeContentRoute,
   ApiPublicMenuImageSplatRoute: ApiPublicMenuImageSplatRoute,
 }
 export const routeTree = rootRouteImport

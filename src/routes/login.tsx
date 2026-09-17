@@ -35,10 +35,15 @@ function LoginPage() {
             e.preventDefault();
             setError("");
             setBusy(true);
-            const res = await signIn(email.trim(), password);
-            setBusy(false);
-            if (!res.ok) setError(res.error ?? "Login failed.");
-            else navigate({ to: "/account" });
+            try {
+              const res = await signIn(email.trim(), password);
+              if (!res.ok) setError(res.error ?? "Login failed.");
+              else navigate({ to: "/account" });
+            } catch {
+              setError("Login failed. Check your connection and try again.");
+            } finally {
+              setBusy(false);
+            }
           }}
           className="rounded-3xl border border-border bg-card p-7"
         >

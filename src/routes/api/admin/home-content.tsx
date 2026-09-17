@@ -1,9 +1,42 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { createClient } from "@supabase/supabase-js";
+
+const json = (body: unknown, status = 200) =>
+  new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
+
+async function requireAdmin(request: Request): Promise<string> {
+  const auth = request.headers.get("authorization") ?? "";
+  const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+  if (!token) throw json({ error: "Unauthorized" }, 401);
+  const url = process.env["SUPABASE_URL"];
+  const key = process.env["SUPABASE_PUBLISHABLE_KEY"];
+  if (!url || !key) throw json({ error: "Server not configured" }, 500);
+  const supabase = createClient(url, key, {
+    auth: { persistSession: false, autoRefreshToken: false },
+    global: { headers: { Authorization: `Bearer ${token}` } },
+  });
+  const { data, error } = await supabase.auth.getUser(token);
+  if (error || !data.user) throw json({ error: "Unauthorized" }, 401);
+  const { data: role } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", data.user.id)
+    .eq("role", "admin")
+    .maybeSingle();
+  if (!role) throw json({ error: "Admin access only" }, 403);
+  return data.user.id;
+}
 
 export const Route = createFileRoute("/api/admin/home-content")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        try {
+          await requireAdmin(request);
+        } catch (res) {
+          if (res instanceof Response) return res;
+          throw res;
+        }
         const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
         const payload = { id: "main", ...body };
         // try service_role first

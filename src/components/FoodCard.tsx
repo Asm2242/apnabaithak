@@ -1,7 +1,7 @@
 import { Heart, Star } from "lucide-react";
 import { useState } from "react";
 import type { MenuItem } from "@/data/menu";
-import { priceFor, rupees, useShop } from "@/lib/shop";
+import { defaultPortion, hasHalfFull, isPizza, priceFor, rupees, useShop, type Portion } from "@/lib/shop";
 
 export function VegDot({ className = "" }: { className?: string }) {
   return (
@@ -16,10 +16,10 @@ export function VegDot({ className = "" }: { className?: string }) {
 
 export function FoodCard({ item }: { item: MenuItem }) {
   const { add, wishlist, toggleWish } = useShop();
-  const hasPortions = item.half != null && item.full != null;
-  const [portion, setPortion] = useState<"Half" | "Full" | "Regular">(
-    hasPortions ? "Half" : "Regular",
-  );
+  const pizza = isPizza(item);
+  const dual = pizza || hasHalfFull(item);
+  const options: Portion[] = pizza ? ["Small", "Regular"] : ["Half", "Full"];
+  const [portion, setPortion] = useState<Portion>(defaultPortion(item));
   const [added, setAdded] = useState(false);
   const wished = wishlist.includes(item.id);
 
@@ -68,9 +68,9 @@ export function FoodCard({ item }: { item: MenuItem }) {
           <p className="mt-1.5 line-clamp-2 text-xs text-muted-foreground">{item.description}</p>
         )}
 
-        {hasPortions && (
+        {dual && (
           <div className="mt-3 inline-flex w-fit rounded-full border border-border p-0.5">
-            {(["Half", "Full"] as const).map((p) => (
+            {options.map((p) => (
               <button
                 key={p}
                 onClick={() => setPortion(p)}

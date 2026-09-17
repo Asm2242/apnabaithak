@@ -1,14 +1,18 @@
 export const ORIGIN = "https://apnabaithak.vercel.app";
 
 export const RESTAURANT = {
-  name: "APNA BAITHAK",
-  tagline: "Pure Veg • Eldeco City",
+  name: "Apna Baithak Vegetarian Restaurant",
+  shortName: "APNA BAITHAK",
+  tagline: "Taste the Tradition • Feel the Comfort",
+  owner: "Abhay Singh",
   phone: "9454999442",
-  phoneDisplay: "+91 9454999442",
+  phoneDisplay: "+91 94549 99442",
+  phone2: "8299751213",
+  phone2Display: "+91 82997 51213",
   whatsapp: "919454999442",
   email: "contact@apnabaithak.example",
   address:
-    "Apna Baithak Vegetarian Restaurant, Eldeco City, Lucknow, Uttar Pradesh",
+    "SHOP NO. LGF 11, ARCADE 1, ELDECO CITY, IIM ROAD, LUCKNOW – 226013",
   area: "Eldeco City, Lucknow",
   hours: "7:30 AM – 10:00 PM",
   days: "All Days",

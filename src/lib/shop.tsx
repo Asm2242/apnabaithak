@@ -10,12 +10,14 @@ import {
 import { MENU_ITEMS, type MenuItem } from "@/data/menu";
 import { FREE_DELIVERY_AT, OFFERS, type Offer } from "@/data/site";
 
+export type Portion = "Half" | "Full" | "Small" | "Regular";
+
 export type CartLine = {
   key: string;
   id: string;
   name: string;
   image: string;
-  portion: "Half" | "Full" | "Regular";
+  portion: Portion;
   price: number;
   qty: number;
 };
@@ -27,7 +29,7 @@ type ShopState = {
   lines: CartLine[];
   wishlist: string[];
   customer: Customer | null;
-  add: (item: MenuItem, portion?: "Half" | "Full" | "Regular") => void;
+  add: (item: MenuItem, portion?: Portion) => void;
   setQty: (key: string, qty: number) => void;
   remove: (key: string) => void;
   clear: () => void;
@@ -69,11 +71,21 @@ function write(key: string, value: unknown) {
   }
 }
 
-export function priceFor(item: MenuItem, portion: "Half" | "Full" | "Regular") {
+export function priceFor(item: MenuItem, portion: Portion) {
   if (portion === "Half") return item.half ?? Math.round(item.price / 2);
   if (portion === "Full") return item.full ?? item.price;
+  // Pizza uses SMALL / REGULAR (stored in half/full columns). Never call them Half/Full.
+  if (portion === "Small") return item.half ?? item.price;
+  // "Regular" = pizza Regular size, otherwise single-price default.
+  if (item.categoryId === "pizza") return item.full ?? item.price;
   return item.price;
 }
+
+export const isPizza = (item: MenuItem) => item.categoryId === "pizza";
+export const hasHalfFull = (item: MenuItem) =>
+  !isPizza(item) && item.half != null && item.full != null;
+export const defaultPortion = (item: MenuItem): Portion =>
+  isPizza(item) ? "Small" : hasHalfFull(item) ? "Half" : "Regular";
 
 export function ShopProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
@@ -96,7 +108,7 @@ export function ShopProvider({ children }: { children: ReactNode }) {
   }, [wishlist, ready]);
 
   const add = useCallback(
-    (item: MenuItem, portion: "Half" | "Full" | "Regular" = "Regular") => {
+    (item: MenuItem, portion: Portion = "Regular") => {
       const price = priceFor(item, portion);
       const key = `${item.id}::${portion}`;
       setLines((prev) => {
